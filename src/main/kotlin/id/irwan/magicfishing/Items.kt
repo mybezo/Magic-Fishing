@@ -287,13 +287,24 @@ object Items {
         return SlimefunItem.getByItem(stack)?.id == ROD
     }
 
+    /**
+     * Materials a magic fish can have: the current vanilla fish, plus buckets and heads from older
+     * versions. Checking the material first skips the Slimefun lookup for almost every item, which
+     * matters because this runs on block place, entity click and every machine tick.
+     */
+    private val FISH_MATERIALS: Set<Material> = java.util.EnumSet.of(
+        Material.COD, Material.SALMON, Material.TROPICAL_FISH,
+        Material.COD_BUCKET, Material.SALMON_BUCKET, Material.TROPICAL_FISH_BUCKET, Material.PUFFERFISH_BUCKET,
+        Material.PLAYER_HEAD
+    )
+
     fun fishOf(stack: ItemStack?): FishType? {
-        if (stack == null || stack.type.isAir) return null
+        if (stack == null || stack.type !in FISH_MATERIALS) return null
         return (SlimefunItem.getByItem(stack) as? MagicFish)?.type
     }
 
     fun isPellet(stack: ItemStack?): Boolean {
-        if (stack == null || stack.type.isAir) return false
+        if (stack == null || stack.type != Material.BROWN_DYE) return false
         return SlimefunItem.getByItem(stack)?.id == PELLET
     }
 

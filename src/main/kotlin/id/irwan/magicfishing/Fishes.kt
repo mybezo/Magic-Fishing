@@ -316,31 +316,39 @@ object Fishes {
         return if (slimefun) sf else 100.0 - sf
     }
 
+    /**
+     * Roll pools, built once: category (Minecraft = false / Slimefun = true) -> rarity -> slots.
+     * A slot is a single fish or a whole group (e.g. all wool colors).
+     */
+    private val pools: Map<Boolean, Map<Rarity, List<List<FishType>>>> by lazy {
+        all.groupBy { it.slimefun }.mapValues { (_, fishes) ->
+            fishes.groupBy { it.rarity }.mapValues { (_, tier) -> tier.groupBy { it.group ?: it.id }.values.toList() }
+        }
+    }
+
     /** Percentage chance that one catch is a fish of this rarity in this category (Minecraft / Slimefun). */
     fun dropChance(rarity: Rarity, slimefun: Boolean): Double {
-        val tiers = all.filter { it.slimefun == slimefun }.map { it.rarity }.toSet()
+        val tiers = pools[slimefun]?.keys ?: return 0.0
         if (rarity !in tiers) return 0.0
         val total = tiers.sumOf { it.chance.coerceAtLeast(0.0) }
         if (total <= 0) return 0.0
         return categoryChance(slimefun) * rarity.chance.coerceAtLeast(0.0) / total
     }
 
-    /** Picks one slot (a single fish or a whole group), then a random fish inside it. */
-    private fun pick(fishes: List<FishType>): FishType =
-        fishes.groupBy { it.group ?: it.id }.values.random().random()
-
     /** Rolls the category (Minecraft / Slimefun), then a rarity tier, then a random fish of that tier. */
     fun roll(): FishType? {
         val slimefun = Random.nextDouble(100.0) < slimefunChance.coerceIn(0.0, 100.0)
-        val byTier = all.filter { it.slimefun == slimefun }.groupBy { it.rarity }
+        val byTier = pools[slimefun] ?: return null
         val tiers = byTier.keys.filter { it.chance > 0 }.sorted()
         val total = tiers.sumOf { it.chance }
         if (total <= 0) return null
         var r = Random.nextDouble(total)
+        var chosen = tiers.last()
         for (tier in tiers) {
             r -= tier.chance
-            if (r < 0) return pick(byTier.getValue(tier))
+            if (r < 0) { chosen = tier; break }
         }
-        return pick(byTier.getValue(tiers.last()))
+        // Pick a slot (single fish or group), then a random fish inside it.
+        return byTier.getValue(chosen).random().random()
     }
 }

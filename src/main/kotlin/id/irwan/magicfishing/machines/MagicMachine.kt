@@ -18,7 +18,6 @@ import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -37,8 +36,6 @@ abstract class MagicMachine(
     protected val layout: MachineLayout
 ) : SlimefunItem(group, item, RecipeType.ENHANCED_CRAFTING_TABLE, recipe), EnergyNetComponent {
 
-    private val progress = ConcurrentHashMap<Location, Int>()
-
     init {
         MachineLayout.registry[id] = layout
         MachineMenu(id, itemName)
@@ -54,7 +51,6 @@ abstract class MagicMachine(
                 override fun onPlayerBreak(e: BlockBreakEvent, item: ItemStack, drops: MutableList<ItemStack>) {
                     val loc = e.block.location
                     BlockStorage.getInventory(e.block)?.dropItems(loc, *layout.inputs, *layout.outputs)
-                    progress.remove(loc)
                 }
             }
         )
@@ -80,6 +76,16 @@ abstract class MagicMachine(
         return max(1, (seconds * 20.0 / rate).roundToInt())
     }
 
+    /**
+     * Progress is stored in Slimefun's BlockStorage, so it survives restarts and chunk unloads
+     * (Aquarium pellets already used are not lost) and is removed with the block.
+     */
+    private fun getProgress(loc: Location): Int = BlockStorage.getLocationInfo(loc, PROGRESS_KEY)?.toIntOrNull() ?: 0
+
+    private fun setProgress(loc: Location, value: Int) {
+        BlockStorage.addBlockInfo(loc, PROGRESS_KEY, value.toString())
+    }
+
     private fun setStatus(menu: BlockMenu, material: Material, text: String, vararg lore: String) {
         if (menu.hasViewer()) menu.replaceExistingItem(layout.statusSlot, icon(material, text, *lore))
     }
@@ -92,7 +98,7 @@ abstract class MagicMachine(
         val result = findOutput(menu)
         val output = result.output
         if (output == null) {
-            progress.remove(loc)
+            if (getProgress(loc) != 0) setProgress(loc, 0)
             setStatus(menu, Material.RED_STAINED_GLASS_PANE, "&c${result.message}")
             return
         }
@@ -102,7 +108,7 @@ abstract class MagicMachine(
             return
         }
 
-        val current = (progress[loc] ?: 0).coerceAtMost(needed)
+        val current = getProgress(loc).coerceAtMost(needed)
         val next = current + 1
         if (next >= needed && !menu.fits(output, *layout.outputs)) {
             setStatus(menu, Material.YELLOW_STAINED_GLASS_PANE, "&eOutput is full")
@@ -116,13 +122,17 @@ abstract class MagicMachine(
         if (next >= needed) {
             removeCharge(loc, energy)
             menu.pushItem(output.clone(), *layout.outputs)
-            progress[loc] = 0
+            setProgress(loc, 0)
         } else {
             removeCharge(loc, energy)
-            progress[loc] = next
+            setProgress(loc, next)
         }
 
-        val now = progress[loc] ?: 0
+        val now = if (next >= needed) 0 else next
         setStatus(menu, Material.LIME_STAINED_GLASS_PANE, "&aWorking", "&7Progress: &f${now * 100 / needed}%", *statusLore(now, needed))
+    }
+
+    companion object {
+        private const val PROGRESS_KEY = "mf-progress"
     }
 }
