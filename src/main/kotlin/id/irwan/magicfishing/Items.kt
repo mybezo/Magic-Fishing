@@ -5,9 +5,10 @@ import id.irwan.magicfishing.machines.MagicAquarium
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack
-import io.github.thebusybiscuit.slimefun4.api.items.groups.NestedItemGroup
 import io.github.thebusybiscuit.slimefun4.api.items.groups.SubItemGroup
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType
+import io.github.thebusybiscuit.slimefun4.api.researches.Research
+import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
@@ -47,7 +48,6 @@ object Items {
         fun cInt(path: String, def: Int): Int { cfg.addDefault(path, def); return cfg.getInt(path, def) }
         fun key(k: String) = NamespacedKey(plugin, k)
 
-        fun cDouble(path: String, def: Double): Double { cfg.addDefault(path, def); return cfg.getDouble(path, def) }
 
         // Config migration: apply the new machine timers and drop removed settings on old configs.
         val configVersion = cfg.getInt("config-version", 1)
@@ -57,12 +57,11 @@ object Items {
             for ((tier, sec) in REFINERY_SECONDS) cfg.set("machines.MF_FISH_REFINERY_$tier.seconds-per-output", sec)
         }
         cfg.set("config-version", CONFIG_VERSION)
-        Fishes.slimefunChance = cDouble("fishing.slimefun-chance", 50.0)
+        loadSettings(cfg)
         val aqPellets = cInt("machines.$AQUARIUM.pellets-per-fish", 16).coerceAtLeast(1)
-        Rarity.values().forEach { it.chance = cDouble("fishing.rarity-chance.${it.name}", it.defaultChance) }
 
         // ===== Guide: Magic Fishing > Material, Machine, Rod, Fish Minecraft Resource, Fish Slimefun Resource =====
-        val main = NestedItemGroup(key("magic_fishing"), icon(Material.FISHING_ROD, "&bMagic Fishing"))
+        val main = GuideGroup(key("magic_fishing"), icon(Material.FISHING_ROD, "&bMagic Fishing"))
         val gMaterial = SubItemGroup(key("mf_material"), main, icon(Material.HEART_OF_THE_SEA, "&bMaterial"))
         val gMachine = SubItemGroup(key("mf_machine"), main, icon(Material.PRISMARINE_BRICKS, "&bMachine"))
         val gRod = SubItemGroup(key("mf_rod"), main, icon(Material.FISHING_ROD, "&bRod"))
@@ -241,8 +240,32 @@ object Items {
             aqEnergy, aqSeconds, aqPellets
         ).register(Addon)
 
+        // ===== Research (costs can be changed in plugins/Slimefun/Researches.yml) =====
+        fun research(k: String, id: Int, name: String, cost: Int, vararg ids: String) {
+            val r = Research(key(k), id, name, cost)
+            r.addItems(*ids.mapNotNull { SlimefunItem.getById(it) }.toTypedArray())
+            r.register()
+        }
+        research("fish_pellet", 78_350_01, "Fish Pellet", 8, PELLET)
+        research("aqua_core", 78_350_02, "Aqua Core", 15, AQUA_CORE)
+        research("magic_fishing_rod", 78_350_03, "Magic Fishing Rod", 20, ROD)
+        research("fish_refinery_1", 78_350_04, "Magic Fish Refinery I", 25, "MF_FISH_REFINERY_1")
+        research("fish_refinery_2", 78_350_05, "Magic Fish Refinery II", 35, "MF_FISH_REFINERY_2")
+        research("fish_refinery_3", 78_350_06, "Magic Fish Refinery III", 45, "MF_FISH_REFINERY_3")
+        research("magic_aquarium", 78_350_07, "Magic Aquarium", 30, AQUARIUM)
+
         cfg.options().copyDefaults(true)
         plugin.saveConfig()
+    }
+
+    /**
+     * Settings that can be changed with /mf reload (no restart needed).
+     * Machine energy / speed and pellet cost are applied on restart only.
+     */
+    fun loadSettings(cfg: FileConfiguration) {
+        fun cDouble(path: String, def: Double): Double { cfg.addDefault(path, def); return cfg.getDouble(path, def) }
+        Fishes.slimefunChance = cDouble("fishing.slimefun-chance", 50.0)
+        Rarity.values().forEach { it.chance = cDouble("fishing.rarity-chance.${it.name}", it.defaultChance) }
     }
 
     /** Refinery seconds per output for tier I / II / III. */

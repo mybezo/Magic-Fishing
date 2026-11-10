@@ -18,6 +18,8 @@ generation needed, just water.
 - **200+ resource fish**: ores, logs, leaves, mob drops, wool, glass, stone types, farm crops, honey, Slimefun dusts, ingots, alloys, components and more.
 - **Stackable fish** (up to 64): fish are vanilla fish items, so they stack on every version, Java and Bedrock.
 - Rods **cannot be enchanted** (enchanting table, anvil or Slimefun Auto Enchanter).
+- **Admin commands** (`/mf give`, `/mf list`, `/mf reload`) and Slimefun **researches**.
+- **GitHub button** in the Magic Fishing guide category.
 - Almost everything is **configurable**.
 
 ---
@@ -177,6 +179,41 @@ There is a short grace period at the start, so players already holding Shift don
 
 ---
 
+## 📚 Research
+
+Items are unlocked with Slimefun researches (XP levels). Costs can be changed in
+`plugins/Slimefun/Researches.yml`.
+
+| Research | Cost | Unlocks |
+|---|---|---|
+| Fish Pellet | 8 | Fish Pellet |
+| Aqua Core | 15 | Aqua Core |
+| Magic Fishing Rod | 20 | Magic Fishing Rod |
+| Magic Fish Refinery I | 25 | Magic Fish Refinery I |
+| Magic Aquarium | 30 | Magic Aquarium |
+| Magic Fish Refinery II | 35 | Magic Fish Refinery II |
+| Magic Fish Refinery III | 45 | Magic Fish Refinery III |
+
+Fish don't need a research: they are caught.
+
+---
+
+## 💬 Commands and permissions
+
+Alias: `/mf` = `/magicfishing`.
+
+| Command | Permission | Description |
+|---|---|---|
+| `/mf help` | (everyone) | Show the commands |
+| `/mf github` | (everyone) | Get the link to this page |
+| `/mf give <player> <item> [amount]` | `magicfishing.admin` | Give any Magic Fishing item (tab completion for ids) |
+| `/mf list [page]` | `magicfishing.admin` | List all Magic Fishing item ids |
+| `/mf reload` | `magicfishing.admin` | Reload fishing chances and minigame settings |
+
+`magicfishing.admin` is given to operators by default.
+
+---
+
 ## ⚙️ Configuration
 
 `plugins/MagicFishing/config.yml` (defaults shown):
@@ -210,8 +247,11 @@ machines:
   MF_MAGIC_AQUARIUM:  { energy-per-tick: 150,  seconds-per-output: 180, pellets-per-fish: 16 }
 ```
 
-Slimefun's own per-item settings (research, enabling/disabling items) are in `plugins/Slimefun/Items.yml`.
-Restart the server after changing the config.
+`/mf reload` applies the `fishing` and `minigame` settings right away. Machine energy and speed, the
+aquarium pellet cost and the chances shown in item lore are applied after a **restart**.
+
+Slimefun's own per-item settings (enabling/disabling items) are in `plugins/Slimefun/Items.yml`, and
+research costs are in `plugins/Slimefun/Researches.yml`.
 
 ---
 
@@ -240,3 +280,12 @@ Open an [issue](../../issues) and include:
 - Server software and version (`/version`)
 - Slimefun version (`/sf versions`)
 - Steps to reproduce, and any console errors
+
+You can also open this page in game: click the **GitHub** button at the top of the Magic Fishing guide
+category, or run `/mf github`.
+
+---
+
+## 📄 License
+
+Magic Fishing is licensed under the [GNU General Public License v3.0](LICENSE), the same license as Slimefun4.

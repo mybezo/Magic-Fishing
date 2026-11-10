@@ -44,7 +44,10 @@ class FishType(
         else leadingCodes(SlimefunItem.getById(outputId ?: "")?.itemName) ?: rarity.color
     }
 
-    val name: String get() = "$nameColor$resourceName Fish"
+    /** "Coal Fish", but "Magic Tropical Fish" / "Magic Pufferfish" instead of "... Fish Fish". */
+    val name: String
+        get() = if (resourceName.endsWith("fish", ignoreCase = true)) "${nameColor}Magic $resourceName"
+        else "$nameColor$resourceName Fish"
 
     /** One output item, or null if the Slimefun item does not exist. */
     fun output(): ItemStack? {

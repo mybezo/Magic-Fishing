@@ -4,3 +4,12 @@ main: id.irwan.magicfishing.MagicFishing
 api-version: '1.18'
 depend: [Slimefun]
 description: Fishing-themed Slimefun4 addon - resource fish, refinery and aquarium.
+commands:
+  magicfishing:
+    description: Magic Fishing commands
+    usage: /<command> [help|github|give|list|reload]
+    aliases: [mf]
+permissions:
+  magicfishing.admin:
+    description: Use /mf give, list and reload
+    default: op
