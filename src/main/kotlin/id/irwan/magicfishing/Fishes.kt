@@ -84,6 +84,14 @@ object Fishes {
         "STONE" to "&7", "GRAVEL" to "&7", "COBBLESTONE" to "&7", "SAND" to "&e", "DIORITE" to "&f",
         "GRANITE" to "&6", "ANDESITE" to "&7", "END_STONE" to "&e", "CLAY" to "&7", "SNOW_BLOCK" to "&f",
         "CLAY_BALL" to "&7", "SNOWBALL" to "&f",
+        "FLINT" to "&8", "BONE_BLOCK" to "&f", "SOUL_SAND" to "&6", "NETHERRACK" to "&c", "OBSIDIAN" to "&5",
+        "MAGMA_BLOCK" to "&6", "WATER_BUCKET" to "&9", "LAVA_BUCKET" to "&6", "QUARTZ_BLOCK" to "&f",
+        "LILY_PAD" to "&2", "ICE" to "&b", "PACKED_ICE" to "&b", "BLUE_ICE" to "&9",
+        "WHEAT" to "&e", "WHEAT_SEEDS" to "&2", "CARROT" to "&6", "POTATO" to "&e", "BEETROOT" to "&4",
+        "BEETROOT_SEEDS" to "&f", "MELON_SLICE" to "&c", "PUMPKIN" to "&6", "SUGAR_CANE" to "&a",
+        "CACTUS" to "&2", "BAMBOO" to "&a", "KELP" to "&2", "SWEET_BERRIES" to "&c", "COCOA_BEANS" to "&6",
+        "BROWN_MUSHROOM" to "&6", "RED_MUSHROOM" to "&c", "NETHER_WART" to "&4", "GLOW_BERRIES" to "&e",
+        "CHORUS_FRUIT" to "&5", "TORCHFLOWER_SEEDS" to "&6", "PITCHER_POD" to "&b",
         "CHERRY_LEAVES" to "&d", "PALE_OAK_LEAVES" to "&7", "AZALEA_LEAVES" to "&a", "FLOWERING_AZALEA_LEAVES" to "&d"
     )
 
@@ -187,8 +195,26 @@ object Fishes {
         mc(
             Rarity.COMMON,
             "STONE", "COBBLESTONE", "GRAVEL", "SAND", "DIORITE", "GRANITE", "ANDESITE",
-            "CLAY", "CLAY_BALL", "SNOW_BLOCK", "SNOWBALL"
-        ) + mc(Rarity.UNCOMMON, "END_STONE")
+            "CLAY", "CLAY_BALL", "SNOW_BLOCK", "SNOWBALL", "FLINT", "BONE_BLOCK", "NETHERRACK",
+            "LILY_PAD", "ICE"
+        ) +
+            mc(
+                Rarity.UNCOMMON,
+                "END_STONE", "SOUL_SAND", "OBSIDIAN", "MAGMA_BLOCK", "QUARTZ_BLOCK",
+                "WATER_BUCKET", "LAVA_BUCKET", "PACKED_ICE"
+            ) +
+            mc(Rarity.RARE, "BLUE_ICE")
+
+    /** Farm crops. Common crops count as one fish in the roll (like wool), then a random crop. */
+    private val farm =
+        mc(
+            Rarity.COMMON,
+            "WHEAT", "WHEAT_SEEDS", "CARROT", "POTATO", "BEETROOT", "BEETROOT_SEEDS", "MELON_SLICE",
+            "PUMPKIN", "SUGAR_CANE", "CACTUS", "BAMBOO", "KELP", "SWEET_BERRIES", "COCOA_BEANS",
+            "BROWN_MUSHROOM", "RED_MUSHROOM"
+        ).inGroup("FARM") +
+            mc(Rarity.UNCOMMON, "NETHER_WART", "GLOW_BERRIES") +
+            mc(Rarity.RARE, "CHORUS_FRUIT", "TORCHFLOWER_SEEDS", "PITCHER_POD")
 
     // ===================== Slimefun resources =====================
 
@@ -255,10 +281,10 @@ object Fishes {
     )
 
     val all: List<FishType> =
-        (ores + logs + leaves + mobDrops + coloredBlocks + earth).filterNotNull() + slimefunDusts + slimefunIngots + slimefunAlloys + slimefunComponents
+        (ores + logs + leaves + mobDrops + coloredBlocks + earth + farm).filterNotNull() + slimefunDusts + slimefunIngots + slimefunAlloys + slimefunComponents
 
     /** Chance (%) that a catch is a Slimefun fish instead of a Minecraft fish (configurable). */
-    var slimefunChance: Double = 15.0
+    var slimefunChance: Double = 50.0
 
     private fun categoryChance(slimefun: Boolean): Double {
         val sf = slimefunChance.coerceIn(0.0, 100.0)
