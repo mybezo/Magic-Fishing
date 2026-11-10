@@ -8,7 +8,11 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.enchantment.EnchantItemEvent
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent
-import org.bukkit.event.inventory.FurnaceSmeltEvent
+import org.bukkit.Material
+import org.bukkit.event.block.Action
+import org.bukkit.event.block.BlockCookEvent
+import org.bukkit.event.player.PlayerInteractEntityEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerFishEvent
@@ -75,11 +79,29 @@ class FishingListener : Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    fun onSmelt(e: FurnaceSmeltEvent) {
+    fun onCook(e: BlockCookEvent) {
+        // Furnace, smoker and campfire.
         if (Items.fishOf(e.source) != null) e.isCancelled = true
     }
 
-    /** Magic fish are player heads: they must not be placed as blocks. */
+    /** Magic fish are raw fish: block putting them on a campfire. */
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    fun onCampfire(e: PlayerInteractEvent) {
+        if (e.action != Action.RIGHT_CLICK_BLOCK) return
+        val type = e.clickedBlock?.type ?: return
+        if (type != Material.CAMPFIRE && type != Material.SOUL_CAMPFIRE) return
+        if (Items.fishOf(e.item) != null) e.isCancelled = true
+    }
+
+    /** Block feeding / taming with magic fish (cats, ocelots, dolphins, ...). */
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    fun onFeed(e: PlayerInteractEntityEvent) {
+        val inv = e.player.inventory
+        val item = if (e.hand == EquipmentSlot.OFF_HAND) inv.itemInOffHand else inv.itemInMainHand
+        if (Items.fishOf(item) != null) e.isCancelled = true
+    }
+
+    /** Old magic fish (player head version) must not be placed as blocks. */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onPlace(e: BlockPlaceEvent) {
         if (Items.fishOf(e.itemInHand) != null) e.isCancelled = true

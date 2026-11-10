@@ -60,8 +60,6 @@ object Items {
         Fishes.slimefunChance = cDouble("fishing.slimefun-chance", 50.0)
         val aqPellets = cInt("machines.$AQUARIUM.pellets-per-fish", 16).coerceAtLeast(1)
         Rarity.values().forEach { it.chance = cDouble("fishing.rarity-chance.${it.name}", it.defaultChance) }
-        fun cStr(path: String, def: String): String { cfg.addDefault(path, def); return cfg.getString(path, def) ?: def }
-        Rarity.values().forEach { it.headTexture = cStr("fishing.head-texture.${it.name}", Rarity.DEFAULT_FISH_HEAD) }
 
         // ===== Guide: Magic Fishing > Material, Machine, Rod, Fish Minecraft Resource, Fish Slimefun Resource =====
         val main = NestedItemGroup(key("magic_fishing"), icon(Material.FISHING_ROD, "&bMagic Fishing"))
@@ -155,7 +153,7 @@ object Items {
             MagicFish(
                 if (fish.slimefun) gFishSf else gFishMc,
                 SlimefunItemStack(
-                    fish.id, fish.rarity.headTexture, fish.name,
+                    fish.id, fish.rarity.icon, fish.name,
                     "", "&7Produces &f${fish.resourceName}",
                     "",
                     "&8\u25B8 &7Rarity: ${fish.rarity.display}",
@@ -165,7 +163,7 @@ object Items {
                     "&8\u25B8 &7Caught with: &bMagic Fishing Rod",
                     "",
                     "&8Not edible"
-                ),
+                ).also { if (fish.rarity.glow) addGlint(it) },
                 catchType,
                 arrayOf(null, null, null, null, rod, null, null, pellet, null),
                 fish
@@ -249,6 +247,15 @@ object Items {
 
     /** Refinery seconds per output for tier I / II / III. */
     private val REFINERY_SECONDS = mapOf(1 to 15, 2 to 10, 3 to 5)
+
+    /** Enchant glint without showing an enchantment (used for Epic / Legendary fish). */
+    private fun addGlint(item: ItemStack) {
+        val meta = item.itemMeta ?: return
+        val ench = org.bukkit.enchantments.Enchantment.getByKey(NamespacedKey.minecraft("lure")) ?: return
+        meta.addEnchant(ench, 1, true)
+        meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS)
+        item.itemMeta = meta
+    }
 
     private fun pct(value: Double): String = String.format(java.util.Locale.ROOT, "%.2f", value)
 
