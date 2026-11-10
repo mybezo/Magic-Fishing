@@ -12,15 +12,22 @@ import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
+import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.inventory.EquipmentSlot
 
 class FishingListener : Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onFish(e: PlayerFishEvent) {
-        if (e.state != PlayerFishEvent.State.CAUGHT_FISH) return
         val inv = e.player.inventory
         if (!Items.isRod(inv.itemInMainHand) && !Items.isRod(inv.itemInOffHand)) return
+        // No casting while the minigame is running.
+        if (e.state == PlayerFishEvent.State.FISHING && Minigame.isPlaying(e.player)) {
+            e.isCancelled = true
+            return
+        }
+        if (e.state != PlayerFishEvent.State.CAUGHT_FISH) return
         val caught = e.caught as? Item ?: return
 
         if (!takePellet(e.player)) {
@@ -28,6 +35,12 @@ class FishingListener : Listener {
             return
         }
         val fish = Fishes.roll() ?: return
+        if (Minigame.enabled) {
+            // The fish is only given if the player wins the minigame.
+            caught.remove()
+            Minigame.start(e.player, fish)
+            return
+        }
         caught.itemStack = Items.fishItem(fish)
         if (fish.rarity >= Rarity.EPIC) {
             e.player.sendMessage(color("&7You caught ${fish.rarity.display} &7fish: &r${fish.name}&7!"))
@@ -92,5 +105,18 @@ class FishingListener : Listener {
         val second = e.inventory.getItem(1)
         if (!Items.isRod(first) && !Items.isRod(second)) return
         if (second != null && !second.type.isAir) e.result = null
+    }
+
+    // ===== Minigame =====
+
+    /** Any sneak toggle counts as input (Java hold-shift and Bedrock touch toggle). */
+    @EventHandler(priority = EventPriority.MONITOR)
+    fun onSneak(e: PlayerToggleSneakEvent) {
+        Minigame.input(e.player)
+    }
+
+    @EventHandler
+    fun onQuit(e: PlayerQuitEvent) {
+        Minigame.stop(e.player, success = false, silent = true)
     }
 }

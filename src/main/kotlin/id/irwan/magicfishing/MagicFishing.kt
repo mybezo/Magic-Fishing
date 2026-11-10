@@ -7,9 +7,14 @@ class MagicFishing : JavaPlugin() {
 
     override fun onEnable() {
         instance = this
+        Minigame.load(config)
         Items.setup(this)
         server.pluginManager.registerEvents(FishingListener(), this)
         logger.info("Magic Fishing enabled (experimental).")
+    }
+
+    override fun onDisable() {
+        Minigame.stopAll()
     }
 
     companion object {

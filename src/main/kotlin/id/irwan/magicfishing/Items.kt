@@ -132,6 +132,9 @@ object Items {
                 "&8\u25B8 &7Uses &f1 pellet &7per fish caught",
                 "&8\u25B8 &7Keep pellets in your inventory",
                 "",
+                "&7When a fish bites, &fsneak &7while the",
+                "&7marker is in the &agreen zone &7to catch it.",
+                "",
                 "&8Cannot be enchanted"
             ),
             RecipeType.MAGIC_WORKBENCH,
