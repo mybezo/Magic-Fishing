@@ -16,7 +16,7 @@ generation needed, just water.
 - **Magic Fish Refinery I / II / III**: turns a fish into its resource. **The fish is never consumed.**
 - **Magic Aquarium**: breeds 2 fish of the same type into a new one, using Fish Pellet.
 - **200+ resource fish**: ores, logs, leaves, mob drops, wool, glass, stone types, farm crops, honey, Slimefun dusts, ingots, alloys, components and more.
-- **Stackable fish** (up to 64) on Minecraft 1.20.5+.
+- **Stackable fish** (up to 64): fish are custom player heads, so they stack on every version.
 - Rods **cannot be enchanted** (enchanting table, anvil or Slimefun Auto Enchanter).
 - Almost everything is **configurable**.
 
@@ -26,7 +26,7 @@ generation needed, just water.
 
 | | |
 |---|---|
-| Server | Paper (or a fork) **1.20+**; **1.20.5+** recommended for stackable fish |
+| Server | Paper (or a fork) **1.20+** |
 | Java | 17+ |
 | Dependency | [Slimefun4](https://github.com/Slimefun/Slimefun4) (built against **RC-37**) |
 | Optional | [Geyser](https://geysermc.org/) for Bedrock players |
@@ -99,15 +99,17 @@ Every catch is rolled in three steps:
 3. A random fish of that tier. Big color families (**wool, glass, glass panes, common farm crops**) count as
    *one* fish in this step, and then a random color or crop is picked, so they don't flood the Common pool.
 
-| Rarity | Tier chance | Per catch (Minecraft) | Per catch (Slimefun) | Icon |
-|---|---|---|---|---|
-| Common | 50% | 25% | 25% | Bucket of Cod |
-| Uncommon | 28% | 14% | 14% | Bucket of Salmon |
-| Rare | 15% | 7.5% | 7.5% | Bucket of Tropical Fish |
-| Epic | 6% | 3% | 3% | Bucket of Pufferfish |
-| Legendary | 1% | 0.5% | 0.5% | Bucket of Pufferfish |
+| Rarity | Tier chance | Per catch (Minecraft) | Per catch (Slimefun) |
+|---|---|---|---|
+| Common | 50% | 25% | 25% |
+| Uncommon | 28% | 14% | 14% |
+| Rare | 15% | 7.5% | 7.5% |
+| Epic | 6% | 3% | 3% |
+| Legendary | 1% | 0.5% | 0.5% |
 
-The fish's **name color matches its output item**. Each fish's lore shows its rarity and catch chance.
+Fish are **player heads with a fish texture** and stack up to 64. The head texture can be set per rarity
+in the config. The fish's **name color matches its output item**, and each fish's lore shows its rarity
+and catch chance.
 
 <details>
 <summary><b>Minecraft fish</b> (click to expand)</summary>
@@ -137,7 +139,7 @@ Items that don't exist on your server version (e.g. Pale Oak on 1.20) are skippe
 
 </details>
 
-Magic fish **cannot be eaten or smelted**, and their buckets **cannot be emptied** into the world.
+Magic fish **cannot be placed** as blocks, eaten or smelted.
 
 ---
 
@@ -190,6 +192,9 @@ fishing:
     RARE: 15.0
     EPIC: 6.0
     LEGENDARY: 1.0
+  head-texture:                  # fish icon per rarity: texture hash or base64 value
+    COMMON: fd4fde511f4454101e4a2a72bc86f12985dfcda76b64bb24dc63a9fa9e3a3
+    # UNCOMMON, RARE, EPIC, LEGENDARY: same default
 
 minigame:
   enabled: true                  # false = no minigame, fish are given instantly
@@ -210,6 +215,10 @@ machines:
   MF_MAGIC_AQUARIUM:  { energy-per-tick: 150,  seconds-per-output: 180, pellets-per-fish: 16 }
 ```
 
+Head textures can be copied from sites such as minecraft-heads.com (use the *Value* or the texture
+hash). Changing a texture only affects newly created fish; existing fish keep their old look and will
+not stack with new ones.
+
 Slimefun's own per-item settings (research, enabling/disabling items) are in `plugins/Slimefun/Items.yml`.
 Restart the server after changing the config.
 
@@ -218,8 +227,8 @@ Restart the server after changing the config.
 ## 📱 Bedrock (Geyser) notes
 
 - The minigame and boss bar work on Bedrock.
-- **Stackable fish** use the 1.20.5+ `max_stack_size` item component. Bedrock clients still treat buckets
-  as unstackable, so Bedrock players may see inventory glitches with stacked fish. Please report any issues.
+- Custom player head textures show as a plain player head in Bedrock **inventories** unless you add the
+  texture hashes to Geyser's `custom-skulls.yml` (under `skin-hashes`) and restart Geyser.
 
 ---
 

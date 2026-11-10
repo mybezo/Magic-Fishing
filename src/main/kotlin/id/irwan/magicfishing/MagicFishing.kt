@@ -10,9 +10,6 @@ class MagicFishing : JavaPlugin() {
         Minigame.load(config)
         Items.setup(this)
         server.pluginManager.registerEvents(FishingListener(), this)
-        if (!Items.customStackSupported) {
-            logger.warning("This server does not support custom stack sizes (needs Minecraft 1.20.5+): magic fish will not stack.")
-        }
         logger.info("Magic Fishing enabled (experimental).")
     }
 

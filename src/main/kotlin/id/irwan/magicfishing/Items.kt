@@ -60,6 +60,8 @@ object Items {
         Fishes.slimefunChance = cDouble("fishing.slimefun-chance", 50.0)
         val aqPellets = cInt("machines.$AQUARIUM.pellets-per-fish", 16).coerceAtLeast(1)
         Rarity.values().forEach { it.chance = cDouble("fishing.rarity-chance.${it.name}", it.defaultChance) }
+        fun cStr(path: String, def: String): String { cfg.addDefault(path, def); return cfg.getString(path, def) ?: def }
+        Rarity.values().forEach { it.headTexture = cStr("fishing.head-texture.${it.name}", Rarity.DEFAULT_FISH_HEAD) }
 
         // ===== Guide: Magic Fishing > Material, Machine, Rod, Fish Minecraft Resource, Fish Slimefun Resource =====
         val main = NestedItemGroup(key("magic_fishing"), icon(Material.FISHING_ROD, "&bMagic Fishing"))
@@ -153,7 +155,7 @@ object Items {
             MagicFish(
                 if (fish.slimefun) gFishSf else gFishMc,
                 SlimefunItemStack(
-                    fish.id, fish.icon, fish.name,
+                    fish.id, fish.rarity.headTexture, fish.name,
                     "", "&7Produces &f${fish.resourceName}",
                     "",
                     "&8\u25B8 &7Rarity: ${fish.rarity.display}",
@@ -163,7 +165,7 @@ object Items {
                     "&8\u25B8 &7Caught with: &bMagic Fishing Rod",
                     "",
                     "&8Not edible"
-                ).also { setMaxStack(it, FISH_STACK_SIZE) },
+                ),
                 catchType,
                 arrayOf(null, null, null, null, rod, null, null, pellet, null),
                 fish
@@ -247,29 +249,6 @@ object Items {
 
     /** Refinery seconds per output for tier I / II / III. */
     private val REFINERY_SECONDS = mapOf(1 to 15, 2 to 10, 3 to 5)
-
-    /** Fish use bucket materials (stack 1 in vanilla); raised via the 1.20.5+ max_stack_size component. */
-    private const val FISH_STACK_SIZE = 64
-
-    /** Whether the server supports custom max stack sizes (Minecraft 1.20.5+). */
-    var customStackSupported = false
-        private set
-
-    /**
-     * Calls ItemMeta.setMaxStackSize(Integer) by reflection so the plugin still compiles against
-     * older Paper APIs and simply keeps stack size 1 on servers below 1.20.5.
-     */
-    private fun setMaxStack(item: ItemStack, size: Int) {
-        val meta = item.itemMeta ?: return
-        try {
-            val method = org.bukkit.inventory.meta.ItemMeta::class.java.getMethod("setMaxStackSize", Int::class.javaObjectType)
-            method.invoke(meta, size)
-            item.itemMeta = meta
-            customStackSupported = true
-        } catch (_: ReflectiveOperationException) {
-            // Server older than 1.20.5: buckets stay unstackable.
-        }
-    }
 
     private fun pct(value: Double): String = String.format(java.util.Locale.ROOT, "%.2f", value)
 

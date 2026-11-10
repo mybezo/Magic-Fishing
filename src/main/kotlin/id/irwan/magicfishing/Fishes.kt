@@ -6,15 +6,26 @@ import org.bukkit.inventory.ItemStack
 import kotlin.random.Random
 
 /** Fish rarity, based on how hard the resource is to obtain or craft. */
-enum class Rarity(val label: String, val color: String, val icon: Material, val defaultChance: Double) {
-    COMMON("Common", "&f", Material.COD_BUCKET, 50.0),
-    UNCOMMON("Uncommon", "&a", Material.SALMON_BUCKET, 28.0),
-    RARE("Rare", "&9", Material.TROPICAL_FISH_BUCKET, 15.0),
-    EPIC("Epic", "&5", Material.PUFFERFISH_BUCKET, 6.0),
-    LEGENDARY("Legendary", "&6", Material.PUFFERFISH_BUCKET, 1.0);
+enum class Rarity(val label: String, val color: String, val defaultChance: Double) {
+    COMMON("Common", "&f", 50.0),
+    UNCOMMON("Uncommon", "&a", 28.0),
+    RARE("Rare", "&9", 15.0),
+    EPIC("Epic", "&5", 6.0),
+    LEGENDARY("Legendary", "&6", 1.0);
 
     /** Relative chance of rolling this tier (configurable, see Items.setup). */
     var chance: Double = defaultChance
+
+    /**
+     * Player head texture (textures.minecraft.net hash or base64) used as the fish icon.
+     * Player heads stack to 64 on every version. Configurable per rarity.
+     */
+    var headTexture: String = DEFAULT_FISH_HEAD
+
+    companion object {
+        /** Fish head texture shipped with Slimefun (HeadTexture.SCRIPT_FISH). */
+        const val DEFAULT_FISH_HEAD = "fd4fde511f4454101e4a2a72bc86f12985dfcda76b64bb24dc63a9fa9e3a3"
+    }
 
     val display: String get() = "$color$label"
 }
@@ -41,7 +52,6 @@ class FishType(
     }
 
     val name: String get() = "$nameColor$resourceName Fish"
-    val icon: Material get() = rarity.icon
 
     /** One output item, or null if the Slimefun item does not exist. */
     fun output(): ItemStack? {

@@ -5,6 +5,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.enchantment.EnchantItemEvent
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent
 import org.bukkit.event.inventory.FurnaceSmeltEvent
@@ -78,7 +79,13 @@ class FishingListener : Listener {
         if (Items.fishOf(e.source) != null) e.isCancelled = true
     }
 
-    /** Magic fish use fish-bucket materials; prevent them from being emptied into the world. */
+    /** Magic fish are player heads: they must not be placed as blocks. */
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    fun onPlace(e: BlockPlaceEvent) {
+        if (Items.fishOf(e.itemInHand) != null) e.isCancelled = true
+    }
+
+    /** Old magic fish used fish-bucket materials; prevent them from being emptied into the world. */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onBucketEmpty(e: PlayerBucketEmptyEvent) {
         val inv = e.player.inventory
