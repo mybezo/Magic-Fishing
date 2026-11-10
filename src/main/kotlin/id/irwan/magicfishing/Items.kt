@@ -184,7 +184,7 @@ object Items {
             val recipe: Array<ItemStack?> = when (tier) {
                 1 -> arrayOf(
                     sf("HARDENED_METAL_INGOT"), aqua, sf("HARDENED_METAL_INGOT"),
-                    sf("ELECTRIC_MOTOR"), sf("ELECTRIC_FURNACE"), sf("ELECTRIC_MOTOR"),
+                    sf("ELECTRIC_MOTOR"), sf("ANCIENT_RUNE_WATER"), sf("ELECTRIC_MOTOR"),
                     sf("HARDENED_METAL_INGOT"), sf("MEDIUM_CAPACITOR"), sf("HARDENED_METAL_INGOT")
                 )
                 2 -> arrayOf(
@@ -201,7 +201,7 @@ object Items {
             FishRefinery(
                 gMachine,
                 SlimefunItemStack(
-                    id, refineryBlocks.getValue(tier), "&bMagic Fish Refinery &7(Tier ${roman(tier)})",
+                    id, refineryBlocks.getValue(tier), "&bMagic Fish Refinery ${roman(tier)}",
                     *machineLore(
                         energy, seconds, "output",
                         "&7Turns a magic fish into its resource.",

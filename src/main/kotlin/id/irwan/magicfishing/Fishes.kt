@@ -27,7 +27,13 @@ class FishType(
     private val outputMaterial: Material? = null,
     private val outputId: String? = null
 ) {
-    val name: String get() = "${rarity.color}$resourceName Fish"
+    /** Name color follows the output item: Slimefun item name color, or the vanilla item's look. */
+    val nameColor: String by lazy {
+        if (outputMaterial != null) Fishes.colorOf(outputMaterial)
+        else leadingCodes(SlimefunItem.getById(outputId ?: "")?.itemName) ?: rarity.color
+    }
+
+    val name: String get() = "$nameColor$resourceName Fish"
     val icon: Material get() = rarity.icon
 
     /** One output item, or null if the Slimefun item does not exist. */
@@ -41,7 +47,40 @@ class FishType(
     fun outputDisplay(): ItemStack = output() ?: ItemStack(Material.BARRIER)
 }
 
+/** Leading color/format codes of a display name (e.g. "§b§lHardened Metal" -> "§b§l"), or null. */
+private fun leadingCodes(text: String?): String? {
+    if (text == null) return null
+    var i = 0
+    while (i + 1 < text.length && (text[i] == '\u00A7' || text[i] == '&') && text[i + 1].lowercaseChar() in "0123456789abcdefklmnor") i += 2
+    return if (i == 0) null else text.substring(0, i)
+}
+
 object Fishes {
+
+    /** Color that resembles a vanilla item (vanilla names are mostly plain white). */
+    private val vanillaColors = mapOf(
+        "COAL" to "&8", "COPPER_INGOT" to "&6", "IRON_INGOT" to "&f", "GOLD_INGOT" to "&e",
+        "LAPIS_LAZULI" to "&9", "REDSTONE" to "&c", "QUARTZ" to "&f", "DIAMOND" to "&b",
+        "EMERALD" to "&a", "NETHERITE_SCRAP" to "&4",
+        "ROTTEN_FLESH" to "&6", "BONE" to "&f", "ARROW" to "&f", "STRING" to "&f", "SPIDER_EYE" to "&c",
+        "GUNPOWDER" to "&7", "LEATHER" to "&6", "FEATHER" to "&f", "EGG" to "&f", "WHITE_WOOL" to "&f",
+        "BEEF" to "&c", "PORKCHOP" to "&d", "CHICKEN" to "&f", "MUTTON" to "&c", "INK_SAC" to "&8",
+        "GOLD_NUGGET" to "&e", "SLIME_BALL" to "&a", "MAGMA_CREAM" to "&6", "RABBIT" to "&6",
+        "RABBIT_HIDE" to "&6", "GLOW_INK_SAC" to "&b", "PRISMARINE_SHARD" to "&3", "PRISMARINE_CRYSTALS" to "&b",
+        "ENDER_PEARL" to "&3", "BLAZE_ROD" to "&6", "GHAST_TEAR" to "&f", "PHANTOM_MEMBRANE" to "&7",
+        "RABBIT_FOOT" to "&6", "ARMADILLO_SCUTE" to "&d", "BREEZE_ROD" to "&b", "NAUTILUS_SHELL" to "&f",
+        "TURTLE_SCUTE" to "&a", "SCUTE" to "&a", "SHULKER_SHELL" to "&5", "WITHER_SKELETON_SKULL" to "&8",
+        "TOTEM_OF_UNDYING" to "&e",
+        "BIRCH_LOG" to "&f", "MANGROVE_LOG" to "&c", "CHERRY_LOG" to "&d", "PALE_OAK_LOG" to "&7",
+        "CRIMSON_STEM" to "&4", "WARPED_STEM" to "&3",
+        "CHERRY_LEAVES" to "&d", "PALE_OAK_LEAVES" to "&7", "AZALEA_LEAVES" to "&a", "FLOWERING_AZALEA_LEAVES" to "&d"
+    )
+
+    fun colorOf(material: Material): String = vanillaColors[material.name] ?: when {
+        material.name.endsWith("_LOG") -> "&6"
+        material.name.endsWith("_LEAVES") -> "&2"
+        else -> "&f"
+    }
 
     /** First material that exists on this server version (keeps older/newer versions safe). */
     private fun mat(vararg names: String): Material? = names.firstNotNullOfOrNull { Material.matchMaterial(it) }
