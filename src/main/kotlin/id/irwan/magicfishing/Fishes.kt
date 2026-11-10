@@ -43,32 +43,32 @@ object Fishes {
     }
 
     private fun sfFish(sfId: String, name: String, weight: Int) =
-        FishType("MF_FISH_SF_$sfId", "&d$name Fish", name, Material.TROPICAL_FISH, weight, true, outputId = sfId)
+        FishType("MF_FISH_SF_$sfId", "&d$name Fish", name, Material.TROPICAL_FISH_BUCKET, weight, true, outputId = sfId)
 
     private val ores = listOf(
-        mcFish("COAL", "Coal", Material.COD, 30, "COAL"),
-        mcFish("COPPER", "Copper", Material.COD, 30, "COPPER_INGOT"),
-        mcFish("IRON", "Iron", Material.COD, 25, "IRON_INGOT"),
-        mcFish("GOLD", "Gold", Material.SALMON, 20, "GOLD_INGOT"),
-        mcFish("LAPIS", "Lapis", Material.SALMON, 20, "LAPIS_LAZULI"),
-        mcFish("REDSTONE", "Redstone", Material.SALMON, 20, "REDSTONE"),
-        mcFish("QUARTZ", "Quartz", Material.SALMON, 20, "QUARTZ"),
-        mcFish("DIAMOND", "Diamond", Material.TROPICAL_FISH, 8, "DIAMOND"),
-        mcFish("EMERALD", "Emerald", Material.TROPICAL_FISH, 8, "EMERALD"),
-        mcFish("NETHERITE", "Netherite", Material.PUFFERFISH, 3, "NETHERITE_SCRAP")
+        mcFish("COAL", "Coal", Material.COD_BUCKET, 30, "COAL"),
+        mcFish("COPPER", "Copper", Material.COD_BUCKET, 30, "COPPER_INGOT"),
+        mcFish("IRON", "Iron", Material.COD_BUCKET, 25, "IRON_INGOT"),
+        mcFish("GOLD", "Gold", Material.SALMON_BUCKET, 20, "GOLD_INGOT"),
+        mcFish("LAPIS", "Lapis", Material.SALMON_BUCKET, 20, "LAPIS_LAZULI"),
+        mcFish("REDSTONE", "Redstone", Material.SALMON_BUCKET, 20, "REDSTONE"),
+        mcFish("QUARTZ", "Quartz", Material.SALMON_BUCKET, 20, "QUARTZ"),
+        mcFish("DIAMOND", "Diamond", Material.TROPICAL_FISH_BUCKET, 8, "DIAMOND"),
+        mcFish("EMERALD", "Emerald", Material.TROPICAL_FISH_BUCKET, 8, "EMERALD"),
+        mcFish("NETHERITE", "Netherite", Material.PUFFERFISH_BUCKET, 3, "NETHERITE_SCRAP")
     )
 
     private val logs =
         listOf("OAK", "SPRUCE", "BIRCH", "JUNGLE", "ACACIA", "DARK_OAK", "MANGROVE", "CHERRY", "PALE_OAK")
-            .map { mcFish("${it}_LOG", null, Material.COD, 25, "${it}_LOG") } +
+            .map { mcFish("${it}_LOG", null, Material.COD_BUCKET, 25, "${it}_LOG") } +
             listOf(
-                mcFish("CRIMSON_STEM", null, Material.COD, 20, "CRIMSON_STEM"),
-                mcFish("WARPED_STEM", null, Material.COD, 20, "WARPED_STEM")
+                mcFish("CRIMSON_STEM", null, Material.COD_BUCKET, 20, "CRIMSON_STEM"),
+                mcFish("WARPED_STEM", null, Material.COD_BUCKET, 20, "WARPED_STEM")
             )
 
     private val leaves =
         listOf("OAK", "SPRUCE", "BIRCH", "JUNGLE", "ACACIA", "DARK_OAK", "MANGROVE", "CHERRY", "PALE_OAK", "AZALEA", "FLOWERING_AZALEA")
-            .map { mcFish("${it}_LEAVES", null, Material.SALMON, 20, "${it}_LEAVES") }
+            .map { mcFish("${it}_LEAVES", null, Material.SALMON_BUCKET, 20, "${it}_LEAVES") }
 
     /** All mob drops except Nether Star. */
     private val mobDrops = listOf(
@@ -80,8 +80,8 @@ object Fishes {
         "PRISMARINE_SHARD" to 15, "PRISMARINE_CRYSTALS" to 12, "PHANTOM_MEMBRANE" to 8,
         "SHULKER_SHELL" to 4, "GOLD_NUGGET" to 20, "NAUTILUS_SHELL" to 4, "TRIDENT" to 2,
         "WITHER_SKELETON_SKULL" to 2, "TOTEM_OF_UNDYING" to 2, "ARMADILLO_SCUTE" to 8, "BREEZE_ROD" to 5
-    ).map { (m, w) -> mcFish(m, null, Material.PUFFERFISH, w, m) } +
-        listOf(mcFish("TURTLE_SCUTE", "Turtle Scute", Material.PUFFERFISH, 5, "TURTLE_SCUTE", "SCUTE"))
+    ).map { (m, w) -> mcFish(m, null, Material.PUFFERFISH_BUCKET, w, m) } +
+        listOf(mcFish("TURTLE_SCUTE", "Turtle Scute", Material.PUFFERFISH_BUCKET, 5, "TURTLE_SCUTE", "SCUTE"))
 
     private val slimefunDusts = listOf(
         sfFish("IRON_DUST", "Iron Dust", 12),

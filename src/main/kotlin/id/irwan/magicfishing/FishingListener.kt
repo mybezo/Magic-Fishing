@@ -6,8 +6,10 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.FurnaceSmeltEvent
+import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
+import org.bukkit.inventory.EquipmentSlot
 
 class FishingListener : Listener {
 
@@ -55,5 +57,13 @@ class FishingListener : Listener {
     @EventHandler(ignoreCancelled = true)
     fun onSmelt(e: FurnaceSmeltEvent) {
         if (Items.fishOf(e.source) != null) e.isCancelled = true
+    }
+
+    /** Magic fish use fish-bucket materials; prevent them from being emptied into the world. */
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    fun onBucketEmpty(e: PlayerBucketEmptyEvent) {
+        val inv = e.player.inventory
+        val stack = if (e.hand == EquipmentSlot.OFF_HAND) inv.itemInOffHand else inv.itemInMainHand
+        if (Items.fishOf(stack) != null) e.isCancelled = true
     }
 }
