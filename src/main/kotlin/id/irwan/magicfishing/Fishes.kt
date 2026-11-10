@@ -91,6 +91,7 @@ object Fishes {
         "BEETROOT_SEEDS" to "&f", "MELON_SLICE" to "&c", "PUMPKIN" to "&6", "SUGAR_CANE" to "&a",
         "CACTUS" to "&2", "BAMBOO" to "&a", "KELP" to "&2", "SWEET_BERRIES" to "&c", "COCOA_BEANS" to "&6",
         "BROWN_MUSHROOM" to "&6", "RED_MUSHROOM" to "&c", "NETHER_WART" to "&4", "GLOW_BERRIES" to "&e",
+        "HONEYCOMB" to "&6", "HONEY_BOTTLE" to "&e", "HONEY_BLOCK" to "&6", "HONEYCOMB_BLOCK" to "&6",
         "CHORUS_FRUIT" to "&5", "TORCHFLOWER_SEEDS" to "&6", "PITCHER_POD" to "&b",
         "CHERRY_LEAVES" to "&d", "PALE_OAK_LEAVES" to "&7", "AZALEA_LEAVES" to "&a", "FLOWERING_AZALEA_LEAVES" to "&d"
     )
@@ -216,6 +217,11 @@ object Fishes {
             mc(Rarity.UNCOMMON, "NETHER_WART", "GLOW_BERRIES") +
             mc(Rarity.RARE, "CHORUS_FRUIT", "TORCHFLOWER_SEEDS", "PITCHER_POD")
 
+    /** Bee products. */
+    private val honey =
+        mc(Rarity.UNCOMMON, "HONEYCOMB", "HONEY_BOTTLE") +
+            mc(Rarity.RARE, "HONEY_BLOCK", "HONEYCOMB_BLOCK")
+
     // ===================== Slimefun resources =====================
 
     private val slimefunDusts = listOf(
@@ -281,7 +287,7 @@ object Fishes {
     )
 
     val all: List<FishType> =
-        (ores + logs + leaves + mobDrops + coloredBlocks + earth + farm).filterNotNull() + slimefunDusts + slimefunIngots + slimefunAlloys + slimefunComponents
+        (ores + logs + leaves + mobDrops + coloredBlocks + earth + farm + honey).filterNotNull() + slimefunDusts + slimefunIngots + slimefunAlloys + slimefunComponents
 
     /** Chance (%) that a catch is a Slimefun fish instead of a Minecraft fish (configurable). */
     var slimefunChance: Double = 50.0
