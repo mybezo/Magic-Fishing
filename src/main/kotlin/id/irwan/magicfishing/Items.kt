@@ -21,6 +21,19 @@ class MagicFish(
     val type: FishType
 ) : SlimefunItem(group, item, recipeType, recipe)
 
+/** Magic Fishing Rod: cannot be enchanted or disenchanted by Slimefun machines. */
+class MagicRod(
+    group: ItemGroup,
+    item: SlimefunItemStack,
+    recipeType: RecipeType,
+    recipe: Array<ItemStack?>
+) : SlimefunItem(group, item, recipeType, recipe) {
+    init {
+        enchantable = false
+        disenchantable = false
+    }
+}
+
 object Items {
 
     const val PELLET = "MF_PELLET"
@@ -105,7 +118,7 @@ object Items {
             "&8\u25B8 &7Keep pellets in your inventory"
         )
 
-        SlimefunItem(
+        MagicRod(
             gRod,
             SlimefunItemStack(ROD_MINECRAFT, Material.FISHING_ROD, "&bMagic Fishing Rod &7(Minecraft Fish)", *rodLore("&bMinecraft")),
             RecipeType.MAGIC_WORKBENCH,
@@ -116,7 +129,7 @@ object Items {
             )
         ).register(Addon)
 
-        SlimefunItem(
+        MagicRod(
             gRod,
             SlimefunItemStack(ROD_SLIMEFUN, Material.FISHING_ROD, "&dMagic Fishing Rod &7(Slimefun Fish)", *rodLore("&dSlimefun")),
             RecipeType.MAGIC_WORKBENCH,
@@ -126,13 +139,6 @@ object Items {
                 sf("REINFORCED_ALLOY_INGOT"), aqua, sf("REINFORCED_ALLOY_INGOT")
             )
         ).register(Addon)
-        // Rods cannot be enchanted or disenchanted (Slimefun Auto Enchanter / Disenchanter).
-        for (id in listOf(ROD_MINECRAFT, ROD_SLIMEFUN)) {
-            SlimefunItem.getById(id)?.let {
-                it.setEnchantable(false)
-                it.setDisenchantable(false)
-            }
-        }
         val rodMc = sf(ROD_MINECRAFT)
         val rodSf = sf(ROD_SLIMEFUN)
 
