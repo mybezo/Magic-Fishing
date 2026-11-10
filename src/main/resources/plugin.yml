@@ -1,0 +1,6 @@
+name: MagicFishing
+version: '${version}'
+main: id.irwan.magicfishing.MagicFishing
+api-version: '1.18'
+depend: [Slimefun]
+description: Fishing-themed Slimefun4 addon - resource fish, refinery and aquarium.
