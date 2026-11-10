@@ -40,7 +40,7 @@ object Items {
     const val AQUA_CORE = "MF_AQUA_CORE"
     const val ROD = "MF_MAGIC_ROD"
     const val AQUARIUM = "MF_MAGIC_AQUARIUM"
-    private const val CONFIG_VERSION = 3
+    private const val CONFIG_VERSION = 4
 
     fun setup(plugin: MagicFishing) {
         val cfg = plugin.config
@@ -51,11 +51,11 @@ object Items {
 
         // Config migration: apply the new machine timers and drop removed settings on old configs.
         val configVersion = cfg.getInt("config-version", 1)
-        if (configVersion < 2) {
-            cfg.set("fishing.weights", null)
+        if (configVersion < 2) cfg.set("fishing.weights", null)
+        if (configVersion < 3) cfg.set("fishing.slimefun-chance", 50.0)
+        if (configVersion < 4) {
             for ((tier, sec) in REFINERY_SECONDS) cfg.set("machines.MF_FISH_REFINERY_$tier.seconds-per-output", sec)
         }
-        if (configVersion < 3) cfg.set("fishing.slimefun-chance", 50.0)
         cfg.set("config-version", CONFIG_VERSION)
         Fishes.slimefunChance = cDouble("fishing.slimefun-chance", 50.0)
         val aqPellets = cInt("machines.$AQUARIUM.pellets-per-fish", 16).coerceAtLeast(1)
@@ -246,7 +246,7 @@ object Items {
     }
 
     /** Refinery seconds per output for tier I / II / III. */
-    private val REFINERY_SECONDS = mapOf(1 to 15, 2 to 10, 3 to 5)
+    private val REFINERY_SECONDS = mapOf(1 to 15, 2 to 8, 3 to 2)
 
     /** Enchant glint without showing an enchantment (used for Epic / Legendary fish). */
     private fun addGlint(item: ItemStack) {

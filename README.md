@@ -82,8 +82,8 @@ All machines are crafted in the **Enhanced Crafting Table** and need **electrici
 | Machine | Energy | Speed | Recipe |
 |---|---|---|---|
 | **Magic Fish Refinery I** | 100 J/tick | 1 output / 15 s | Hardened Metal, Aqua Core, Hardened Metal / Electric Motor, Ancient Rune [Water], Electric Motor / Hardened Metal, Medium Capacitor, Hardened Metal |
-| **Magic Fish Refinery II** | 250 J/tick | 1 output / 10 s | Reinforced Alloy, Aqua Core, Reinforced Alloy / Advanced Circuit Board, Refinery I, Advanced Circuit Board / Reinforced Alloy, Large Capacitor, Reinforced Alloy |
-| **Magic Fish Refinery III** | 1000 J/tick | 1 output / 5 s | Blistering Ingot, Aqua Core, Blistering Ingot / Carbonado, Refinery II, Carbonado / Reinforced Plate, Carbonado Edged Capacitor, Reinforced Plate |
+| **Magic Fish Refinery II** | 250 J/tick | 1 output / 8 s | Reinforced Alloy, Aqua Core, Reinforced Alloy / Advanced Circuit Board, Refinery I, Advanced Circuit Board / Reinforced Alloy, Large Capacitor, Reinforced Alloy |
+| **Magic Fish Refinery III** | 1000 J/tick | 1 output / 2 s | Blistering Ingot, Aqua Core, Blistering Ingot / Carbonado, Refinery II, Carbonado / Reinforced Plate, Carbonado Edged Capacitor, Reinforced Plate |
 | **Magic Aquarium** | 150 J/tick | 1 fish / 180 s | Hardened Glass ×3 / Aqua Core, Ancient Rune [Water], Aqua Core / Reinforced Alloy, Advanced Circuit Board, Reinforced Alloy |
 
 > Cargo can **pull outputs** from machines. Inputs are placed by hand, since fish are never consumed.
@@ -205,8 +205,8 @@ minigame:
 
 machines:
   MF_FISH_REFINERY_1: { energy-per-tick: 100,  seconds-per-output: 15 }
-  MF_FISH_REFINERY_2: { energy-per-tick: 250,  seconds-per-output: 10 }
-  MF_FISH_REFINERY_3: { energy-per-tick: 1000, seconds-per-output: 5 }
+  MF_FISH_REFINERY_2: { energy-per-tick: 250,  seconds-per-output: 8 }
+  MF_FISH_REFINERY_3: { energy-per-tick: 1000, seconds-per-output: 2 }
   MF_MAGIC_AQUARIUM:  { energy-per-tick: 150,  seconds-per-output: 180, pellets-per-fish: 16 }
 ```
 
