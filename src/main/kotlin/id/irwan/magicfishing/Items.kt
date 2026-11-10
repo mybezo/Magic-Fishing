@@ -46,7 +46,8 @@ object Items {
         fun cInt(path: String, def: Int): Int { cfg.addDefault(path, def); return cfg.getInt(path, def) }
         fun key(k: String) = NamespacedKey(plugin, k)
 
-        Fishes.all.forEach { it.weight = cInt("fishing.weights.${it.id}", it.defaultWeight) }
+        fun cDouble(path: String, def: Double): Double { cfg.addDefault(path, def); return cfg.getDouble(path, def) }
+        Rarity.values().forEach { it.chance = cDouble("fishing.rarity-chance.${it.name}", it.defaultChance) }
 
         // ===== Guide: Magic Fishing > Material, Machine, Rod, Fish Minecraft Resource, Fish Slimefun Resource =====
         val main = NestedItemGroup(key("magic_fishing"), icon(Material.FISHING_ROD, "&bMagic Fishing"))
@@ -143,14 +144,17 @@ object Items {
         val rodSf = sf(ROD_SLIMEFUN)
 
         // ===== Fish =====
-        for (fish in Fishes.all) {
+        for (fish in Fishes.all.sortedBy { it.rarity }) {
             val rodName = if (fish.slimefun) "&dMagic Fishing Rod (Slimefun Fish)" else "&bMagic Fishing Rod (Minecraft Fish)"
+            val chance = String.format(java.util.Locale.ROOT, "%.1f", Fishes.tierChance(fish.rarity, fish.slimefun))
             MagicFish(
                 if (fish.slimefun) gFishSf else gFishMc,
                 SlimefunItemStack(
                     fish.id, fish.icon, fish.name,
                     "", "&7Produces &f${fish.resourceName}",
                     "",
+                    "&8\u25B8 &7Rarity: ${fish.rarity.display}",
+                    "&8\u25B8 &7${fish.rarity.label} chance: &e$chance%",
                     "&8\u25B8 &7Process in: &bMagic Fish Refinery",
                     "&8\u25B8 &7Breed in: &bMagic Aquarium",
                     "&8\u25B8 &7Caught with: $rodName",

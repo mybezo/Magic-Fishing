@@ -29,6 +29,9 @@ class FishingListener : Listener {
         }
         val fish = Fishes.roll(slimefunRod) ?: return
         caught.itemStack = Items.fishItem(fish)
+        if (fish.rarity >= Rarity.EPIC) {
+            e.player.sendMessage(color("&7You caught a ${fish.rarity.display} &r${fish.name}&7!"))
+        }
     }
 
     /** Removes exactly 1 Fish Pellet from the player's inventory. */
