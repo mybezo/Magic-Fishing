@@ -27,6 +27,13 @@ class FishType(
     private val outputMaterial: Material? = null,
     private val outputId: String? = null
 ) {
+    /**
+     * Fish in the same group share one slot in the roll (e.g. all wool colors):
+     * the group is picked first, then a random fish (color) inside it.
+     */
+    var group: String? = null
+        internal set
+
     /** Name color follows the output item: Slimefun item name color, or the vanilla item's look. */
     val nameColor: String by lazy {
         if (outputMaterial != null) Fishes.colorOf(outputMaterial)
@@ -167,12 +174,14 @@ object Fishes {
             mc(Rarity.EPIC, "SHULKER_SHELL", "WITHER_SKELETON_SKULL", "TOTEM_OF_UNDYING") +
             mc(Rarity.LEGENDARY, "NETHER_STAR")
 
-    /** All wool, glass and glass pane colors. */
+    private fun List<FishType?>.inGroup(group: String): List<FishType?> = onEach { it?.group = group }
+
+    /** All wool, glass and glass pane colors. Each family counts as one fish in the roll. */
     private val coloredBlocks =
-        mc(Rarity.COMMON, *DYES.map { "${it}_WOOL" }.toTypedArray()) +
-            mc(Rarity.COMMON, "GLASS", *DYES.map { "${it}_STAINED_GLASS" }.toTypedArray()) +
+        mc(Rarity.COMMON, *DYES.map { "${it}_WOOL" }.toTypedArray()).inGroup("WOOL") +
+            mc(Rarity.COMMON, "GLASS", *DYES.map { "${it}_STAINED_GLASS" }.toTypedArray()).inGroup("GLASS") +
             mc(Rarity.UNCOMMON, "TINTED_GLASS") +
-            mc(Rarity.COMMON, "GLASS_PANE", *DYES.map { "${it}_STAINED_GLASS_PANE" }.toTypedArray())
+            mc(Rarity.COMMON, "GLASS_PANE", *DYES.map { "${it}_STAINED_GLASS_PANE" }.toTypedArray()).inGroup("GLASS_PANE")
 
     private val earth =
         mc(
@@ -265,6 +274,10 @@ object Fishes {
         return categoryChance(slimefun) * rarity.chance.coerceAtLeast(0.0) / total
     }
 
+    /** Picks one slot (a single fish or a whole group), then a random fish inside it. */
+    private fun pick(fishes: List<FishType>): FishType =
+        fishes.groupBy { it.group ?: it.id }.values.random().random()
+
     /** Rolls the category (Minecraft / Slimefun), then a rarity tier, then a random fish of that tier. */
     fun roll(): FishType? {
         val slimefun = Random.nextDouble(100.0) < slimefunChance.coerceIn(0.0, 100.0)
@@ -275,8 +288,8 @@ object Fishes {
         var r = Random.nextDouble(total)
         for (tier in tiers) {
             r -= tier.chance
-            if (r < 0) return byTier.getValue(tier).random()
+            if (r < 0) return pick(byTier.getValue(tier))
         }
-        return byTier.getValue(tiers.last()).random()
+        return pick(byTier.getValue(tiers.last()))
     }
 }
