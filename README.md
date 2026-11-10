@@ -114,8 +114,8 @@ The fish's **name color matches its output item**, and each fish's lore shows it
 
 | Rarity | Fish |
 |---|---|
-| **Common** | Coal, Copper · Oak / Spruce / Birch / Jungle / Acacia / Dark Oak / Mangrove Log and Leaves, Azalea Leaves · Rotten Flesh, Bone, Arrow, String, Spider Eye, Gunpowder, Leather, Feather, Egg, Beef, Porkchop, Chicken, Mutton, Ink Sac, Gold Nugget · All Wool · Glass and all Stained Glass · Glass Pane and all Stained Glass Panes · Stone, Cobblestone, Gravel, Sand, Diorite, Granite, Andesite, Clay, Clay Ball, Snow Block, Snowball, Flint, Bone Block, Netherrack, Lily Pad, Ice · Farm crops (Wheat, Seeds, Carrot, Potato, Beetroot, Beetroot Seeds, Melon Slice, Pumpkin, Sugar Cane, Cactus, Bamboo, Kelp, Sweet Berries, Cocoa Beans, Mushrooms) |
-| **Uncommon** | Iron, Gold, Lapis, Redstone, Quartz · Cherry / Pale Oak Log and Leaves, Flowering Azalea Leaves, Crimson / Warped Stem · Slime Ball, Magma Cream, Rabbit, Rabbit Hide, Glow Ink Sac, Prismarine Shard, Prismarine Crystals · Tinted Glass · End Stone, Soul Sand, Obsidian, Magma Block, Quartz Block, Water Bucket, Lava Bucket, Packed Ice · Nether Wart, Glow Berries · Honeycomb, Honey Bottle |
+| **Common** | Coal, Copper · Oak / Spruce / Birch / Jungle / Acacia / Dark Oak / Mangrove Log and Leaves, Azalea Leaves · Rotten Flesh, Bone, Arrow, String, Spider Eye, Gunpowder, Leather, Feather, Egg, Beef, Porkchop, Chicken, Mutton, Ink Sac, Gold Nugget · All Wool · Glass and all Stained Glass · Glass Pane and all Stained Glass Panes · Stone, Cobblestone, Gravel, Sand, Diorite, Granite, Andesite, Clay, Clay Ball, Snow Block, Snowball, Flint, Bone Block, Netherrack, Lily Pad, Ice · Wheat, Dried Kelp, Bone Meal, Cod, Salmon · Farm crops (Seeds, Carrot, Potato, Beetroot, Beetroot Seeds, Melon Slice, Pumpkin, Sugar Cane, Cactus, Bamboo, Kelp, Sweet Berries, Cocoa Beans, Mushrooms) |
+| **Uncommon** | Iron, Gold, Lapis, Redstone, Quartz · Cherry / Pale Oak Log and Leaves, Flowering Azalea Leaves, Crimson / Warped Stem · Slime Ball, Magma Cream, Rabbit, Rabbit Hide, Glow Ink Sac, Prismarine Shard, Prismarine Crystals · Tinted Glass · End Stone, Soul Sand, Obsidian, Magma Block, Quartz Block, Water Bucket, Lava Bucket, Packed Ice · Nether Wart, Glow Berries · Tropical Fish, Pufferfish · Honeycomb, Honey Bottle |
 | **Rare** | Diamond, Emerald · Ender Pearl, Blaze Rod, Ghast Tear, Phantom Membrane, Rabbit Foot, Armadillo Scute, Breeze Rod, Nautilus Shell, Turtle Scute · Blue Ice · Chorus Fruit, Torchflower Seeds, Pitcher Pod · Honey Block, Honeycomb Block |
 | **Epic** | Shulker Shell, Wither Skeleton Skull, Totem of Undying |
 | **Legendary** | Netherite Scrap, Nether Star |
@@ -130,9 +130,9 @@ Items that don't exist on your server version (e.g. Pale Oak on 1.20) are skippe
 | Rarity | Fish |
 |---|---|
 | **Common** | Iron, Gold, Copper, Tin, Silver, Aluminum, Lead, Zinc and Magnesium Dust · Sifted Ore |
-| **Uncommon** | Aluminum, Copper, Tin, Silver, Lead, Zinc and Magnesium Ingot · 4K to 10K Gold |
-| **Rare** | Nickel, Cobalt · 12K to 18K Gold · Bronze, Brass, Billon, Solder, Steel, Aluminum Brass, Aluminum Bronze · Heating Coil, Electromagnet, Electric Motor |
-| **Epic** | 20K to 24K Gold · Duralumin, Corinthian Bronze, Damascus Steel, Redstone Alloy, Gilded Iron, Hardened Metal · Plastic Sheet, Uranium, Blistering Ingot (33%), Blistering Ingot (66%) |
+| **Uncommon** | Aluminum, Copper, Tin, Silver, Lead, Zinc and Magnesium Ingot · 4K to 10K Gold · Magical Lump I, Ender Lump I |
+| **Rare** | Nickel, Cobalt · 12K to 18K Gold · Bronze, Brass, Billon, Solder, Steel, Aluminum Brass, Aluminum Bronze · Heating Coil, Electromagnet, Electric Motor · Magical Lump II, Ender Lump II |
+| **Epic** | 20K to 24K Gold · Duralumin, Corinthian Bronze, Damascus Steel, Redstone Alloy, Gilded Iron, Hardened Metal · Plastic Sheet, Uranium, Blistering Ingot (33%), Blistering Ingot (66%) · Magical Lump III, Ender Lump III |
 | **Legendary** | Reinforced Alloy Ingot, Blistering Ingot |
 
 </details>

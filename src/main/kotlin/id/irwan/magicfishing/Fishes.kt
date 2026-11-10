@@ -90,6 +90,8 @@ object Fishes {
         "FLINT" to "&8", "BONE_BLOCK" to "&f", "SOUL_SAND" to "&6", "NETHERRACK" to "&c", "OBSIDIAN" to "&5",
         "MAGMA_BLOCK" to "&6", "WATER_BUCKET" to "&9", "LAVA_BUCKET" to "&6", "QUARTZ_BLOCK" to "&f",
         "LILY_PAD" to "&2", "ICE" to "&b", "PACKED_ICE" to "&b", "BLUE_ICE" to "&9",
+        "COD" to "&6", "SALMON" to "&c", "TROPICAL_FISH" to "&6", "PUFFERFISH" to "&e",
+        "DRIED_KELP" to "&2", "BONE_MEAL" to "&f",
         "WHEAT" to "&e", "WHEAT_SEEDS" to "&2", "CARROT" to "&6", "POTATO" to "&e", "BEETROOT" to "&4",
         "BEETROOT_SEEDS" to "&f", "MELON_SLICE" to "&c", "PUMPKIN" to "&6", "SUGAR_CANE" to "&a",
         "CACTUS" to "&2", "BAMBOO" to "&a", "KELP" to "&2", "SWEET_BERRIES" to "&c", "COCOA_BEANS" to "&6",
@@ -213,12 +215,17 @@ object Fishes {
     private val farm =
         mc(
             Rarity.COMMON,
-            "WHEAT", "WHEAT_SEEDS", "CARROT", "POTATO", "BEETROOT", "BEETROOT_SEEDS", "MELON_SLICE",
+            "WHEAT_SEEDS", "CARROT", "POTATO", "BEETROOT", "BEETROOT_SEEDS", "MELON_SLICE",
             "PUMPKIN", "SUGAR_CANE", "CACTUS", "BAMBOO", "KELP", "SWEET_BERRIES", "COCOA_BEANS",
             "BROWN_MUSHROOM", "RED_MUSHROOM"
         ).inGroup("FARM") +
             mc(Rarity.UNCOMMON, "NETHER_WART", "GLOW_BERRIES") +
             mc(Rarity.RARE, "CHORUS_FRUIT", "TORCHFLOWER_SEEDS", "PITCHER_POD")
+
+    /** Fish Pellet ingredients (wheat, dried kelp, bone meal, raw fish). Each one is its own fish. */
+    private val pelletIngredients =
+        mc(Rarity.COMMON, "WHEAT", "DRIED_KELP", "BONE_MEAL", "COD", "SALMON") +
+            mc(Rarity.UNCOMMON, "TROPICAL_FISH", "PUFFERFISH")
 
     /** Bee products. */
     private val honey =
@@ -277,8 +284,14 @@ object Fishes {
         sf("REINFORCED_ALLOY_INGOT", "Reinforced Alloy Ingot", Rarity.LEGENDARY)
     )
 
-    /** Slimefun components and radioactive materials. */
+    /** Slimefun magical lumps, components and radioactive materials. */
     private val slimefunComponents = listOf(
+        sf("MAGIC_LUMP_1", "Magical Lump I", Rarity.UNCOMMON),
+        sf("MAGIC_LUMP_2", "Magical Lump II", Rarity.RARE),
+        sf("MAGIC_LUMP_3", "Magical Lump III", Rarity.EPIC),
+        sf("ENDER_LUMP_1", "Ender Lump I", Rarity.UNCOMMON),
+        sf("ENDER_LUMP_2", "Ender Lump II", Rarity.RARE),
+        sf("ENDER_LUMP_3", "Ender Lump III", Rarity.EPIC),
         sf("HEATING_COIL", "Heating Coil", Rarity.RARE),
         sf("ELECTRO_MAGNET", "Electromagnet", Rarity.RARE),
         sf("ELECTRIC_MOTOR", "Electric Motor", Rarity.RARE),
@@ -290,7 +303,7 @@ object Fishes {
     )
 
     val all: List<FishType> =
-        (ores + logs + leaves + mobDrops + coloredBlocks + earth + farm + honey).filterNotNull() + slimefunDusts + slimefunIngots + slimefunAlloys + slimefunComponents
+        (ores + logs + leaves + mobDrops + coloredBlocks + earth + farm + pelletIngredients + honey).filterNotNull() + slimefunDusts + slimefunIngots + slimefunAlloys + slimefunComponents
 
     /** Chance (%) that a catch is a Slimefun fish instead of a Minecraft fish (configurable). */
     var slimefunChance: Double = 50.0
