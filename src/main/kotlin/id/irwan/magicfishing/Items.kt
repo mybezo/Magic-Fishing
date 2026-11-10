@@ -126,6 +126,13 @@ object Items {
                 sf("REINFORCED_ALLOY_INGOT"), aqua, sf("REINFORCED_ALLOY_INGOT")
             )
         ).register(Addon)
+        // Rods cannot be enchanted or disenchanted (Slimefun Auto Enchanter / Disenchanter).
+        for (id in listOf(ROD_MINECRAFT, ROD_SLIMEFUN)) {
+            SlimefunItem.getById(id)?.let {
+                it.setEnchantable(false)
+                it.setDisenchantable(false)
+            }
+        }
         val rodMc = sf(ROD_MINECRAFT)
         val rodSf = sf(ROD_SLIMEFUN)
 

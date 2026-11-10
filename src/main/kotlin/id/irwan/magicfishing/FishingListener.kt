@@ -5,7 +5,10 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.enchantment.EnchantItemEvent
+import org.bukkit.event.enchantment.PrepareItemEnchantEvent
 import org.bukkit.event.inventory.FurnaceSmeltEvent
+import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
@@ -65,5 +68,26 @@ class FishingListener : Listener {
         val inv = e.player.inventory
         val stack = if (e.hand == EquipmentSlot.OFF_HAND) inv.itemInOffHand else inv.itemInMainHand
         if (Items.fishOf(stack) != null) e.isCancelled = true
+    }
+
+    // ===== Magic rods cannot be enchanted =====
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    fun onPrepareEnchant(e: PrepareItemEnchantEvent) {
+        if (Items.rodIsSlimefun(e.item) != null) e.isCancelled = true
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    fun onEnchant(e: EnchantItemEvent) {
+        if (Items.rodIsSlimefun(e.item) != null) e.isCancelled = true
+    }
+
+    /** Anvil: renaming is allowed, but combining a magic rod with anything (books, rods) is blocked. */
+    @EventHandler(priority = EventPriority.HIGH)
+    fun onPrepareAnvil(e: PrepareAnvilEvent) {
+        val first = e.inventory.getItem(0)
+        val second = e.inventory.getItem(1)
+        if (Items.rodIsSlimefun(first) == null && Items.rodIsSlimefun(second) == null) return
+        if (second != null && !second.type.isAir) e.result = null
     }
 }
