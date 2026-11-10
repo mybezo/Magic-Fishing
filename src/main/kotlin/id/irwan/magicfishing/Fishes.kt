@@ -73,10 +73,29 @@ object Fishes {
         "TOTEM_OF_UNDYING" to "&e",
         "BIRCH_LOG" to "&f", "MANGROVE_LOG" to "&c", "CHERRY_LOG" to "&d", "PALE_OAK_LOG" to "&7",
         "CRIMSON_STEM" to "&4", "WARPED_STEM" to "&3",
+        "GLASS" to "&f", "GLASS_PANE" to "&f", "TINTED_GLASS" to "&5", "NETHER_STAR" to "&e",
+        "STONE" to "&7", "GRAVEL" to "&7", "COBBLESTONE" to "&7", "SAND" to "&e", "DIORITE" to "&f",
+        "GRANITE" to "&6", "ANDESITE" to "&7", "END_STONE" to "&e", "CLAY" to "&7", "SNOW_BLOCK" to "&f",
+        "CLAY_BALL" to "&7", "SNOWBALL" to "&f",
         "CHERRY_LEAVES" to "&d", "PALE_OAK_LEAVES" to "&7", "AZALEA_LEAVES" to "&a", "FLOWERING_AZALEA_LEAVES" to "&d"
     )
 
-    fun colorOf(material: Material): String = vanillaColors[material.name] ?: when {
+    private val DYES = listOf(
+        "WHITE", "ORANGE", "MAGENTA", "LIGHT_BLUE", "YELLOW", "LIME", "PINK", "GRAY",
+        "LIGHT_GRAY", "CYAN", "PURPLE", "BLUE", "BROWN", "GREEN", "RED", "BLACK"
+    )
+
+    private val dyeColors = mapOf(
+        "WHITE" to "&f", "ORANGE" to "&6", "MAGENTA" to "&d", "LIGHT_BLUE" to "&b", "YELLOW" to "&e",
+        "LIME" to "&a", "PINK" to "&d", "GRAY" to "&8", "LIGHT_GRAY" to "&7", "CYAN" to "&3",
+        "PURPLE" to "&5", "BLUE" to "&9", "BROWN" to "&6", "GREEN" to "&2", "RED" to "&c", "BLACK" to "&8"
+    )
+
+    /** Dye color of a colored block like LIGHT_BLUE_STAINED_GLASS (longest prefix wins). */
+    private fun dyeColorOf(name: String): String? =
+        DYES.sortedByDescending { it.length }.firstOrNull { name.startsWith("${it}_") }?.let { dyeColors[it] }
+
+    fun colorOf(material: Material): String = vanillaColors[material.name] ?: dyeColorOf(material.name) ?: when {
         material.name.endsWith("_LOG") -> "&6"
         material.name.endsWith("_LEAVES") -> "&2"
         else -> "&f"
@@ -132,7 +151,7 @@ object Fishes {
         mc(
             Rarity.COMMON,
             "ROTTEN_FLESH", "BONE", "ARROW", "STRING", "SPIDER_EYE", "GUNPOWDER", "LEATHER", "FEATHER",
-            "EGG", "WHITE_WOOL", "BEEF", "PORKCHOP", "CHICKEN", "MUTTON", "INK_SAC", "GOLD_NUGGET"
+            "EGG", "BEEF", "PORKCHOP", "CHICKEN", "MUTTON", "INK_SAC", "GOLD_NUGGET"
         ) +
             mc(
                 Rarity.UNCOMMON,
@@ -145,7 +164,22 @@ object Fishes {
                 "ARMADILLO_SCUTE", "BREEZE_ROD", "NAUTILUS_SHELL"
             ) +
             listOf(mc("TURTLE_SCUTE", "Turtle Scute", Rarity.RARE, "TURTLE_SCUTE", "SCUTE")) +
-            mc(Rarity.EPIC, "SHULKER_SHELL", "WITHER_SKELETON_SKULL", "TOTEM_OF_UNDYING")
+            mc(Rarity.EPIC, "SHULKER_SHELL", "WITHER_SKELETON_SKULL", "TOTEM_OF_UNDYING") +
+            mc(Rarity.LEGENDARY, "NETHER_STAR")
+
+    /** All wool, glass and glass pane colors. */
+    private val coloredBlocks =
+        mc(Rarity.COMMON, *DYES.map { "${it}_WOOL" }.toTypedArray()) +
+            mc(Rarity.COMMON, "GLASS", *DYES.map { "${it}_STAINED_GLASS" }.toTypedArray()) +
+            mc(Rarity.UNCOMMON, "TINTED_GLASS") +
+            mc(Rarity.COMMON, "GLASS_PANE", *DYES.map { "${it}_STAINED_GLASS_PANE" }.toTypedArray())
+
+    private val earth =
+        mc(
+            Rarity.COMMON,
+            "STONE", "COBBLESTONE", "GRAVEL", "SAND", "DIORITE", "GRANITE", "ANDESITE",
+            "CLAY", "CLAY_BALL", "SNOW_BLOCK", "SNOWBALL"
+        ) + mc(Rarity.UNCOMMON, "END_STONE")
 
     // ===================== Slimefun resources =====================
 
@@ -181,7 +215,7 @@ object Fishes {
         sf("GOLD_${k}K", "$k-Carat Gold Ingot", rarity)
     }
 
-    /** Smeltery alloys + Hardened / Reinforced (Blistering excluded). */
+    /** Smeltery alloys + Hardened / Reinforced. */
     private val slimefunAlloys = listOf(
         sf("BRONZE_INGOT", "Bronze Ingot", Rarity.RARE),
         sf("BRASS_INGOT", "Brass Ingot", Rarity.RARE),
@@ -199,8 +233,20 @@ object Fishes {
         sf("REINFORCED_ALLOY_INGOT", "Reinforced Alloy Ingot", Rarity.LEGENDARY)
     )
 
+    /** Slimefun components and radioactive materials. */
+    private val slimefunComponents = listOf(
+        sf("HEATING_COIL", "Heating Coil", Rarity.RARE),
+        sf("ELECTRO_MAGNET", "Electromagnet", Rarity.RARE),
+        sf("ELECTRIC_MOTOR", "Electric Motor", Rarity.RARE),
+        sf("PLASTIC_SHEET", "Plastic Sheet", Rarity.EPIC),
+        sf("URANIUM", "Uranium", Rarity.EPIC),
+        sf("BLISTERING_INGOT", "Blistering Ingot (33%)", Rarity.EPIC),
+        sf("BLISTERING_INGOT_2", "Blistering Ingot (66%)", Rarity.EPIC),
+        sf("BLISTERING_INGOT_3", "Blistering Ingot", Rarity.LEGENDARY)
+    )
+
     val all: List<FishType> =
-        (ores + logs + leaves + mobDrops).filterNotNull() + slimefunDusts + slimefunIngots + slimefunAlloys
+        (ores + logs + leaves + mobDrops + coloredBlocks + earth).filterNotNull() + slimefunDusts + slimefunIngots + slimefunAlloys + slimefunComponents
 
     /** Chance (%) that a catch is a Slimefun fish instead of a Minecraft fish (configurable). */
     var slimefunChance: Double = 15.0
