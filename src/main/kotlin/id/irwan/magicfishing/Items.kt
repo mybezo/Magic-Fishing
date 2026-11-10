@@ -38,8 +38,9 @@ object Items {
 
     const val PELLET = "MF_PELLET"
     const val AQUA_CORE = "MF_AQUA_CORE"
-    const val ROD_MINECRAFT = "MF_ROD_MINECRAFT"
-    const val ROD_SLIMEFUN = "MF_ROD_SLIMEFUN"
+    const val ROD = "MF_MAGIC_ROD"
+    const val AQUARIUM = "MF_MAGIC_AQUARIUM"
+    private const val CONFIG_VERSION = 2
 
     fun setup(plugin: MagicFishing) {
         val cfg = plugin.config
@@ -47,6 +48,15 @@ object Items {
         fun key(k: String) = NamespacedKey(plugin, k)
 
         fun cDouble(path: String, def: Double): Double { cfg.addDefault(path, def); return cfg.getDouble(path, def) }
+
+        // Config migration: apply the new machine timers and drop removed settings on old configs.
+        if (cfg.getInt("config-version", 1) < CONFIG_VERSION) {
+            cfg.set("fishing.weights", null)
+            for ((tier, sec) in REFINERY_SECONDS) cfg.set("machines.MF_FISH_REFINERY_$tier.seconds-per-output", sec)
+            cfg.set("config-version", CONFIG_VERSION)
+        }
+        Fishes.slimefunChance = cDouble("fishing.slimefun-chance", 15.0)
+        val aqPellets = cInt("machines.$AQUARIUM.pellets-per-fish", 16).coerceAtLeast(1)
         Rarity.values().forEach { it.chance = cDouble("fishing.rarity-chance.${it.name}", it.defaultChance) }
 
         // ===== Guide: Magic Fishing > Material, Machine, Rod, Fish Minecraft Resource, Fish Slimefun Resource =====
@@ -76,7 +86,7 @@ object Items {
                 "", "&7Magic fish food and fishing bait.",
                 "",
                 "&8\u25B8 &7Fishing: &f1 pellet per fish",
-                "&8\u25B8 &7Magic Aquarium: &fnot consumed",
+                "&8\u25B8 &7Magic Aquarium: &f$aqPellets pellets per fish",
                 "&8\u25B8 &7Crafting gives &f8 pellets"
             ),
             RecipeType.ENHANCED_CRAFTING_TABLE,
@@ -111,17 +121,19 @@ object Items {
         val pellet = sf(PELLET)
 
         // ===== Rod =====
-        fun rodLore(kind: String): Array<String> = arrayOf(
-            "", "&7Catches $kind &7resource fish.",
-            "",
-            "&8\u25B8 &7Bait: &6Fish Pellet",
-            "&8\u25B8 &7Uses &f1 pellet &7per fish caught",
-            "&8\u25B8 &7Keep pellets in your inventory"
-        )
-
         MagicRod(
             gRod,
-            SlimefunItemStack(ROD_MINECRAFT, Material.FISHING_ROD, "&bMagic Fishing Rod &7(Minecraft Fish)", *rodLore("&bMinecraft")),
+            SlimefunItemStack(
+                ROD, Material.FISHING_ROD, "&bMagic Fishing Rod",
+                "", "&7Catches &bMinecraft &7and &dSlimefun &7resource fish.",
+                "",
+                "&8\u25B8 &7Slimefun fish chance: &e${pct(Fishes.slimefunChance.coerceIn(0.0, 100.0))}%",
+                "&8\u25B8 &7Bait: &6Fish Pellet",
+                "&8\u25B8 &7Uses &f1 pellet &7per fish caught",
+                "&8\u25B8 &7Keep pellets in your inventory",
+                "",
+                "&8Cannot be enchanted"
+            ),
             RecipeType.MAGIC_WORKBENCH,
             arrayOf(
                 sf("MAGIC_LUMP_3"), aqua, sf("MAGIC_LUMP_3"),
@@ -129,24 +141,10 @@ object Items {
                 sf("MAGIC_LUMP_3"), aqua, sf("MAGIC_LUMP_3")
             )
         ).register(Addon)
-
-        MagicRod(
-            gRod,
-            SlimefunItemStack(ROD_SLIMEFUN, Material.FISHING_ROD, "&dMagic Fishing Rod &7(Slimefun Fish)", *rodLore("&dSlimefun")),
-            RecipeType.MAGIC_WORKBENCH,
-            arrayOf(
-                sf("CARBONADO"), aqua, sf("CARBONADO"),
-                sf("BLISTERING_INGOT_3"), sf(ROD_MINECRAFT), sf("BLISTERING_INGOT_3"),
-                sf("REINFORCED_ALLOY_INGOT"), aqua, sf("REINFORCED_ALLOY_INGOT")
-            )
-        ).register(Addon)
-        val rodMc = sf(ROD_MINECRAFT)
-        val rodSf = sf(ROD_SLIMEFUN)
+        val rod = sf(ROD)
 
         // ===== Fish =====
         for (fish in Fishes.all.sortedBy { it.rarity }) {
-            val rodName = if (fish.slimefun) "&dMagic Fishing Rod (Slimefun Fish)" else "&bMagic Fishing Rod (Minecraft Fish)"
-            val chance = String.format(java.util.Locale.ROOT, "%.1f", Fishes.tierChance(fish.rarity, fish.slimefun))
             MagicFish(
                 if (fish.slimefun) gFishSf else gFishMc,
                 SlimefunItemStack(
@@ -154,15 +152,15 @@ object Items {
                     "", "&7Produces &f${fish.resourceName}",
                     "",
                     "&8\u25B8 &7Rarity: ${fish.rarity.display}",
-                    "&8\u25B8 &7${fish.rarity.label} chance: &e$chance%",
+                    "&8\u25B8 &7Catch chance: &e${pct(Fishes.dropChance(fish.rarity, fish.slimefun))}%",
                     "&8\u25B8 &7Process in: &bMagic Fish Refinery",
                     "&8\u25B8 &7Breed in: &bMagic Aquarium",
-                    "&8\u25B8 &7Caught with: $rodName",
+                    "&8\u25B8 &7Caught with: &bMagic Fishing Rod",
                     "",
                     "&8Not edible"
                 ),
                 catchType,
-                arrayOf(null, null, null, null, if (fish.slimefun) rodSf else rodMc, null, null, pellet, null),
+                arrayOf(null, null, null, null, rod, null, null, pellet, null),
                 fish
             ).register(Addon)
         }
@@ -176,14 +174,13 @@ object Items {
             "&8\u25B8 &7Speed: &f1 $unit every $seconds s"
         )
 
-        val refineryDefaults = mapOf(1 to (100 to 10), 2 to (250 to 6), 3 to (1000 to 1))
+        val refineryEnergy = mapOf(1 to 100, 2 to 250, 3 to 1000)
         val refineryBlocks = mapOf(1 to Material.PRISMARINE, 2 to Material.PRISMARINE_BRICKS, 3 to Material.DARK_PRISMARINE)
         var prevRefinery: ItemStack? = null
         for (tier in 1..3) {
             val id = "MF_FISH_REFINERY_$tier"
-            val (defEnergy, defSeconds) = refineryDefaults.getValue(tier)
-            val energy = cInt("machines.$id.energy-per-tick", defEnergy)
-            val seconds = cInt("machines.$id.seconds-per-output", defSeconds)
+            val energy = cInt("machines.$id.energy-per-tick", refineryEnergy.getValue(tier))
+            val seconds = cInt("machines.$id.seconds-per-output", REFINERY_SECONDS.getValue(tier))
             val recipe: Array<ItemStack?> = when (tier) {
                 1 -> arrayOf(
                     sf("HARDENED_METAL_INGOT"), aqua, sf("HARDENED_METAL_INGOT"),
@@ -216,17 +213,19 @@ object Items {
             prevRefinery = sf(id)
         }
 
-        val aqEnergy = cInt("machines.MF_MAGIC_AQUARIUM.energy-per-tick", 150)
-        val aqSeconds = cInt("machines.MF_MAGIC_AQUARIUM.seconds-per-output", 180)
+        val aqEnergy = cInt("machines.$AQUARIUM.energy-per-tick", 150)
+        val aqSeconds = cInt("machines.$AQUARIUM.seconds-per-output", 180)
         MagicAquarium(
             gMachine,
             SlimefunItemStack(
-                "MF_MAGIC_AQUARIUM", Material.LIGHT_BLUE_STAINED_GLASS, "&bMagic Aquarium",
+                AQUARIUM, Material.LIGHT_BLUE_STAINED_GLASS, "&bMagic Aquarium",
                 *machineLore(
                     aqEnergy, aqSeconds, "fish",
                     "&7Breeds 2 fish of the same type",
                     "&7into 1 new fish using &6Fish Pellet&7.",
-                    "&7Fish and pellet are &fnever consumed&7."
+                    "&7Parent fish are &fnever consumed&7.",
+                    "&7Consumes &6$aqPellets Fish Pellet &7per fish,",
+                    "&7gradually as progress goes up."
                 )
             ),
             arrayOf(
@@ -234,21 +233,21 @@ object Items {
                 aqua, sf("ANCIENT_RUNE_WATER"), aqua,
                 sf("REINFORCED_ALLOY_INGOT"), sf("ADVANCED_CIRCUIT_BOARD"), sf("REINFORCED_ALLOY_INGOT")
             ),
-            aqEnergy, aqSeconds
+            aqEnergy, aqSeconds, aqPellets
         ).register(Addon)
 
         cfg.options().copyDefaults(true)
         plugin.saveConfig()
     }
 
-    /** null = not a magic rod, false = Minecraft fish rod, true = Slimefun fish rod. */
-    fun rodIsSlimefun(stack: ItemStack?): Boolean? {
-        if (stack == null || stack.type != Material.FISHING_ROD) return null
-        return when (SlimefunItem.getByItem(stack)?.id) {
-            ROD_MINECRAFT -> false
-            ROD_SLIMEFUN -> true
-            else -> null
-        }
+    /** Refinery seconds per output for tier I / II / III. */
+    private val REFINERY_SECONDS = mapOf(1 to 15, 2 to 10, 3 to 5)
+
+    private fun pct(value: Double): String = String.format(java.util.Locale.ROOT, "%.2f", value)
+
+    fun isRod(stack: ItemStack?): Boolean {
+        if (stack == null || stack.type != Material.FISHING_ROD) return false
+        return SlimefunItem.getByItem(stack)?.id == ROD
     }
 
     fun fishOf(stack: ItemStack?): FishType? {

@@ -16,7 +16,7 @@ enum class Rarity(val label: String, val color: String, val icon: Material, val 
     /** Relative chance of rolling this tier (configurable, see Items.setup). */
     var chance: Double = defaultChance
 
-    val display: String get() = "$color&l${label.uppercase()}"
+    val display: String get() = "$color$label"
 }
 
 class FishType(
@@ -163,18 +163,28 @@ object Fishes {
     val all: List<FishType> =
         (ores + logs + leaves + mobDrops).filterNotNull() + slimefunDusts + slimefunIngots + slimefunAlloys
 
-    /** Percentage chance of a rarity tier for the given rod (only tiers that have fish count). */
-    fun tierChance(rarity: Rarity, slimefunRod: Boolean): Double {
-        val tiers = all.filter { it.slimefun == slimefunRod }.map { it.rarity }.toSet()
-        if (rarity !in tiers) return 0.0
-        val total = tiers.sumOf { it.chance.coerceAtLeast(0.0) }
-        return if (total <= 0) 0.0 else rarity.chance.coerceAtLeast(0.0) / total * 100.0
+    /** Chance (%) that a catch is a Slimefun fish instead of a Minecraft fish (configurable). */
+    var slimefunChance: Double = 15.0
+
+    private fun categoryChance(slimefun: Boolean): Double {
+        val sf = slimefunChance.coerceIn(0.0, 100.0)
+        return if (slimefun) sf else 100.0 - sf
     }
 
-    /** Rolls a rarity tier first, then a random fish of that tier for the given rod type. */
-    fun roll(slimefunRod: Boolean): FishType? {
-        val byTier = all.filter { it.slimefun == slimefunRod }.groupBy { it.rarity }
-        val tiers = byTier.keys.filter { it.chance > 0 }
+    /** Percentage chance that one catch is a fish of this rarity in this category (Minecraft / Slimefun). */
+    fun dropChance(rarity: Rarity, slimefun: Boolean): Double {
+        val tiers = all.filter { it.slimefun == slimefun }.map { it.rarity }.toSet()
+        if (rarity !in tiers) return 0.0
+        val total = tiers.sumOf { it.chance.coerceAtLeast(0.0) }
+        if (total <= 0) return 0.0
+        return categoryChance(slimefun) * rarity.chance.coerceAtLeast(0.0) / total
+    }
+
+    /** Rolls the category (Minecraft / Slimefun), then a rarity tier, then a random fish of that tier. */
+    fun roll(): FishType? {
+        val slimefun = Random.nextDouble(100.0) < slimefunChance.coerceIn(0.0, 100.0)
+        val byTier = all.filter { it.slimefun == slimefun }.groupBy { it.rarity }
+        val tiers = byTier.keys.filter { it.chance > 0 }.sorted()
         val total = tiers.sumOf { it.chance }
         if (total <= 0) return null
         var r = Random.nextDouble(total)

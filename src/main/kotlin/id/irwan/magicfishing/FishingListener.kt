@@ -20,17 +20,17 @@ class FishingListener : Listener {
     fun onFish(e: PlayerFishEvent) {
         if (e.state != PlayerFishEvent.State.CAUGHT_FISH) return
         val inv = e.player.inventory
-        val slimefunRod = Items.rodIsSlimefun(inv.itemInMainHand) ?: Items.rodIsSlimefun(inv.itemInOffHand) ?: return
+        if (!Items.isRod(inv.itemInMainHand) && !Items.isRod(inv.itemInOffHand)) return
         val caught = e.caught as? Item ?: return
 
         if (!takePellet(e.player)) {
             e.player.sendMessage(color("&cYou need &6Fish Pellet &cin your inventory to catch magic fish."))
             return
         }
-        val fish = Fishes.roll(slimefunRod) ?: return
+        val fish = Fishes.roll() ?: return
         caught.itemStack = Items.fishItem(fish)
         if (fish.rarity >= Rarity.EPIC) {
-            e.player.sendMessage(color("&7You caught a ${fish.rarity.display} &r${fish.name}&7!"))
+            e.player.sendMessage(color("&7You caught ${fish.rarity.display} &7fish: &r${fish.name}&7!"))
         }
     }
 
@@ -77,12 +77,12 @@ class FishingListener : Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onPrepareEnchant(e: PrepareItemEnchantEvent) {
-        if (Items.rodIsSlimefun(e.item) != null) e.isCancelled = true
+        if (Items.isRod(e.item)) e.isCancelled = true
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onEnchant(e: EnchantItemEvent) {
-        if (Items.rodIsSlimefun(e.item) != null) e.isCancelled = true
+        if (Items.isRod(e.item)) e.isCancelled = true
     }
 
     /** Anvil: renaming is allowed, but combining a magic rod with anything (books, rods) is blocked. */
@@ -90,7 +90,7 @@ class FishingListener : Listener {
     fun onPrepareAnvil(e: PrepareAnvilEvent) {
         val first = e.inventory.getItem(0)
         val second = e.inventory.getItem(1)
-        if (Items.rodIsSlimefun(first) == null && Items.rodIsSlimefun(second) == null) return
+        if (!Items.isRod(first) && !Items.isRod(second)) return
         if (second != null && !second.type.isAir) e.result = null
     }
 }

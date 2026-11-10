@@ -62,6 +62,15 @@ abstract class MagicMachine(
 
     protected abstract fun findOutput(menu: BlockMenu): WorkResult
 
+    /**
+     * Called before progress goes from [before] to [after] (out of [needed] ticks).
+     * Return an error message to pause the machine, or null to continue.
+     */
+    protected open fun consumeProgress(menu: BlockMenu, before: Int, after: Int, needed: Int): String? = null
+
+    /** Extra status lore lines for the current progress. */
+    protected open fun statusLore(progress: Int, needed: Int): Array<String> = emptyArray()
+
     override fun getEnergyComponentType(): EnergyNetComponentType = EnergyNetComponentType.CONSUMER
 
     override fun getCapacity(): Int = energy * 2
@@ -93,12 +102,18 @@ abstract class MagicMachine(
             return
         }
 
-        val next = (progress[loc] ?: 0) + 1
+        val current = (progress[loc] ?: 0).coerceAtMost(needed)
+        val next = current + 1
+        if (next >= needed && !menu.fits(output, *layout.outputs)) {
+            setStatus(menu, Material.YELLOW_STAINED_GLASS_PANE, "&eOutput is full")
+            return
+        }
+        consumeProgress(menu, current, next.coerceAtMost(needed), needed)?.let {
+            setStatus(menu, Material.RED_STAINED_GLASS_PANE, "&c$it", "&7Progress: &f${current * 100 / needed}%", *statusLore(current, needed))
+            return
+        }
+
         if (next >= needed) {
-            if (!menu.fits(output, *layout.outputs)) {
-                setStatus(menu, Material.YELLOW_STAINED_GLASS_PANE, "&eOutput is full")
-                return
-            }
             removeCharge(loc, energy)
             menu.pushItem(output.clone(), *layout.outputs)
             progress[loc] = 0
@@ -107,7 +122,7 @@ abstract class MagicMachine(
             progress[loc] = next
         }
 
-        val percent = (progress[loc] ?: 0) * 100 / needed
-        setStatus(menu, Material.LIME_STAINED_GLASS_PANE, "&aWorking", "&7Progress: &f$percent%")
+        val now = progress[loc] ?: 0
+        setStatus(menu, Material.LIME_STAINED_GLASS_PANE, "&aWorking", "&7Progress: &f${now * 100 / needed}%", *statusLore(now, needed))
     }
 }
