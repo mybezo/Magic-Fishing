@@ -106,7 +106,7 @@ object Fishes {
                 "ARMADILLO_SCUTE", "BREEZE_ROD", "NAUTILUS_SHELL"
             ) +
             listOf(mc("TURTLE_SCUTE", "Turtle Scute", Rarity.RARE, "TURTLE_SCUTE", "SCUTE")) +
-            mc(Rarity.EPIC, "SHULKER_SHELL", "TRIDENT", "WITHER_SKELETON_SKULL", "TOTEM_OF_UNDYING")
+            mc(Rarity.EPIC, "SHULKER_SHELL", "WITHER_SKELETON_SKULL", "TOTEM_OF_UNDYING")
 
     // ===================== Slimefun resources =====================
 
