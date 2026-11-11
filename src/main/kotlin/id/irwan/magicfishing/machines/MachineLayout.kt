@@ -9,7 +9,9 @@ class MachineLayout(
     val inputs: IntArray,
     val outputs: IntArray,
     val statusSlot: Int,
-    val decorations: Map<Int, ItemStack>
+    val decorations: Map<Int, ItemStack>,
+    /** Slot that cargo may insert Fish Pellet into (-1 = none). */
+    val pelletSlot: Int = -1
 ) {
     companion object {
         /** Filled before the menu is created, because BlockMenuPreset calls init() inside its constructor. */

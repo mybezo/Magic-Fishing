@@ -41,7 +41,7 @@ object Items {
     const val AQUA_CORE = "MF_AQUA_CORE"
     const val ROD = "MF_MAGIC_ROD"
     const val AQUARIUM = "MF_MAGIC_AQUARIUM"
-    private const val CONFIG_VERSION = 4
+    private const val CONFIG_VERSION = 5
 
     fun setup(plugin: MagicFishing) {
         val cfg = plugin.config
@@ -56,6 +56,8 @@ object Items {
         if (configVersion < 4) {
             for ((tier, sec) in REFINERY_SECONDS) cfg.set("machines.MF_FISH_REFINERY_$tier.seconds-per-output", sec)
         }
+        // Normal fishing with rod bait is now the default; the minigame is optional.
+        if (configVersion < 5) cfg.set("minigame.enabled", false)
         cfg.set("config-version", CONFIG_VERSION)
         loadSettings(cfg)
         val aqPellets = cInt("machines.$AQUARIUM.pellets-per-fish", 16).coerceAtLeast(1)
@@ -86,7 +88,8 @@ object Items {
                 PELLET, Material.BROWN_DYE, "&6Fish Pellet",
                 "", "&7Magic fish food and fishing bait.",
                 "",
-                "&8\u25B8 &7Fishing: &f1 pellet per fish",
+                "&8\u25B8 &7Rod bait: &fclick the rod with a pellet",
+                "&8\u25B8 &7Fishing: &f1 pellet per fish caught",
                 "&8\u25B8 &7Magic Aquarium: &f$aqPellets pellets per fish",
                 "&8\u25B8 &7Crafting gives &f8 pellets"
             ),
@@ -129,14 +132,15 @@ object Items {
                 "", "&7Catches &bMinecraft &7and &dSlimefun &7resource fish.",
                 "",
                 "&8\u25B8 &7Slimefun fish chance: &e${pct(Fishes.slimefunChance.coerceIn(0.0, 100.0))}%",
-                "&8\u25B8 &7Bait: &6Fish Pellet",
-                "&8\u25B8 &7Uses &f1 pellet &7per fish caught",
-                "&8\u25B8 &7Keep pellets in your inventory",
                 "",
-                "&7When a fish bites, &fsneak &7while the",
-                "&7marker is in the &agreen zone &7to catch it.",
+                "&7Needs bait for every cast: in your",
+                "&7inventory, click the rod while holding",
+                "&7a &6Fish Pellet &7on your cursor.",
+                "&7One bait is used per fish caught.",
                 "",
-                "&8Cannot be enchanted"
+                "&8Cannot be enchanted",
+                "",
+                Bait.EMPTY_LORE
             ),
             RecipeType.MAGIC_WORKBENCH,
             arrayOf(

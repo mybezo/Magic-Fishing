@@ -31,3 +31,10 @@ fun mc(material: Material): ItemStack = ItemStack(material)
 fun roman(n: Int): String = when (n) {
     1 -> "I"; 2 -> "II"; 3 -> "III"; 4 -> "IV"; 5 -> "V"; else -> n.toString()
 }
+
+fun actionBar(player: org.bukkit.entity.Player, text: String) {
+    player.spigot().sendMessage(
+        net.md_5.bungee.api.ChatMessageType.ACTION_BAR,
+        *net.md_5.bungee.api.chat.TextComponent.fromLegacyText(color(text))
+    )
+}

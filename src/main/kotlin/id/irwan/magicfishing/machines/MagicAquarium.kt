@@ -65,7 +65,8 @@ class MagicAquarium(
                 MachineLayout.ring(16) to MachineLayout.FISH_BORDER,
                 MachineLayout.ring(13) to MachineLayout.PELLET_BORDER,
                 MachineLayout.ring(37) to MachineLayout.STATUS_BORDER
-            )
+            ),
+            pelletSlot = 13
         )
     }
 }

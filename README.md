@@ -12,7 +12,8 @@ generation needed, just water.
 
 - **Magic Fishing Rod**: catches *resource fish* for both Minecraft and Slimefun materials.
 - **Rarity system**: Common, Uncommon, Rare, Epic and Legendary, based on how hard each resource is to obtain or craft.
-- **Catch minigame**: a boss-bar timing challenge that stops auto-fish mods and AFK fishing. Works on Java and Bedrock (Geyser).
+- **Rod bait**: every cast needs a Fish Pellet put on the rod by hand, which stops auto-fish mods and AFK fishing.
+- **Optional catch minigame**: a boss-bar timing challenge (off by default). Works on Java and Bedrock (Geyser).
 - **Magic Fish Refinery I / II / III**: turns a fish into its resource. **The fish is never consumed.**
 - **Magic Aquarium**: breeds 2 fish of the same type into a new one, using Fish Pellet.
 - **200+ resource fish**: ores, logs, leaves, mob drops, wool, glass, stone types, farm crops, honey, Slimefun dusts, ingots, alloys, components and more.
@@ -55,8 +56,8 @@ Aqua Core ────┼──► Magic Fishing Rod ──► fish! ──► M
 1. Craft **Fish Pellet** (bait and fish food). One craft gives 8.
 2. Craft an **Aqua Core**. It is used in the rod and every machine.
 3. Craft the **Magic Fishing Rod**.
-4. Fish with pellets in your inventory. Each catch uses **1 pellet**.
-5. When a fish bites, win the **minigame** to keep it.
+4. **Bait the rod**: open your inventory, pick up a Fish Pellet and click the rod with it.
+5. Fish normally. Each fish caught uses the bait, so bait the rod again before the next cast.
 6. Put the fish in a **Magic Fish Refinery** to get its resource, over and over.
 7. Use the **Magic Aquarium** to breed more fish of a type.
 
@@ -88,7 +89,9 @@ All machines are crafted in the **Enhanced Crafting Table** and need **electrici
 | **Magic Fish Refinery III** | 1000 J/tick | 1 output / 2 s | Blistering Ingot, Aqua Core, Blistering Ingot / Carbonado, Refinery II, Carbonado / Reinforced Plate, Carbonado Edged Capacitor, Reinforced Plate |
 | **Magic Aquarium** | 150 J/tick | 1 fish / 180 s | Hardened Glass ×3 / Aqua Core, Ancient Rune [Water], Aqua Core / Reinforced Alloy, Advanced Circuit Board, Reinforced Alloy |
 
-> Cargo can **pull outputs** from machines. Inputs are placed by hand, since fish are never consumed.
+> **Cargo:** cargo nodes can **pull outputs** from every machine and **insert Fish Pellet** into the
+> Magic Aquarium. Fish inputs are placed by hand, since they are never consumed. All machines use the
+> normal Slimefun **energy network**.
 
 ---
 
@@ -143,7 +146,18 @@ Magic fish **cannot be eaten, cooked** (furnace, smoker, campfire) **or fed** to
 
 ---
 
-## 🎮 Catch minigame
+## 🪱 Rod bait
+
+- A Magic Fishing Rod can only be **cast when it has bait**. The rod's lore shows `Bait: Fish Pellet` or `Bait: None`.
+- To bait it, open your inventory, pick up a **Fish Pellet** with the cursor and **click the rod** (left or right click). This uses 1 pellet.
+- Catching a fish uses the bait. Reeling in without a fish keeps it.
+- Auto-fish mods and AFK setups can't re-bait the rod, so they stop after one fish.
+
+---
+
+## 🎮 Catch minigame (optional)
+
+Disabled by default. Set `minigame.enabled: true` in the config to turn it on.
 
 When a magic fish bites and you reel in, a **boss bar** appears:
 
@@ -172,7 +186,7 @@ There is a short grace period at the start, so players already holding Shift don
 
 ## 🐠 Magic Aquarium
 
-- Put **2 fish of the same type** and **Fish Pellet** in the aquarium.
+- Put **2 fish of the same type** and **Fish Pellet** in the aquarium (pellets can also come from cargo).
 - It consumes **16 Fish Pellet per new fish**, gradually: 1 pellet every 6.25% of progress.
 - If pellets run out, the aquarium **pauses** and keeps its progress until you add more.
 - The parent fish are never consumed.
@@ -229,7 +243,7 @@ fishing:
     LEGENDARY: 1.0
 
 minigame:
-  enabled: true                  # false = no minigame, fish are given instantly
+  enabled: false                 # true = timing minigame on every catch
   seconds: 5.0                   # time limit
   grace-ticks: 5                 # ignore input for the first ticks
   tolerance: 1                   # extra segments allowed on each side of the zone
@@ -257,6 +271,7 @@ research costs are in `plugins/Slimefun/Researches.yml`.
 
 ## 📱 Bedrock (Geyser) notes
 
+- Rod bait works on Bedrock: select the Fish Pellet, then tap the rod.
 - The minigame and boss bar work on Bedrock.
 - Fish are plain vanilla items, so they look and stack the same on Bedrock.
 

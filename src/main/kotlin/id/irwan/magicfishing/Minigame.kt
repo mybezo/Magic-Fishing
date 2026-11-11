@@ -35,7 +35,7 @@ object Minigame {
         Rarity.LEGENDARY to Difficulty(3, 1.3)
     )
 
-    var enabled = true
+    var enabled = false
         private set
     private var timeTicks = 100
     private var graceTicks = 5
@@ -60,8 +60,8 @@ object Minigame {
     fun load(cfg: FileConfiguration) {
         fun int(path: String, def: Int): Int { cfg.addDefault(path, def); return cfg.getInt(path, def) }
         fun dbl(path: String, def: Double): Double { cfg.addDefault(path, def); return cfg.getDouble(path, def) }
-        cfg.addDefault("minigame.enabled", true)
-        enabled = cfg.getBoolean("minigame.enabled", true)
+        cfg.addDefault("minigame.enabled", false)
+        enabled = cfg.getBoolean("minigame.enabled", false)
         timeTicks = (dbl("minigame.seconds", 5.0) * 20).roundToInt().coerceAtLeast(20)
         graceTicks = int("minigame.grace-ticks", 5).coerceAtLeast(0)
         tolerance = int("minigame.tolerance", 1).coerceAtLeast(0)

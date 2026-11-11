@@ -8,7 +8,11 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.enchantment.EnchantItemEvent
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent
+import org.bukkit.GameMode
 import org.bukkit.Material
+import org.bukkit.Sound
+import org.bukkit.event.inventory.ClickType
+import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockCookEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
@@ -26,19 +30,29 @@ class FishingListener : Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onFish(e: PlayerFishEvent) {
         val inv = e.player.inventory
-        if (!Items.isRod(inv.itemInMainHand) && !Items.isRod(inv.itemInOffHand)) return
-        // No casting while the minigame is running.
-        if (e.state == PlayerFishEvent.State.FISHING && Minigame.isPlaying(e.player)) {
-            e.isCancelled = true
+        val mainHand = Items.isRod(inv.itemInMainHand)
+        if (!mainHand && !Items.isRod(inv.itemInOffHand)) return
+        val rod = if (mainHand) inv.itemInMainHand else inv.itemInOffHand
+
+        if (e.state == PlayerFishEvent.State.FISHING) {
+            // No casting while the minigame is running, and every cast needs bait.
+            if (Minigame.isPlaying(e.player)) {
+                e.isCancelled = true
+            } else if (!Bait.isBaited(rod)) {
+                e.isCancelled = true
+                actionBar(e.player, "&cBait your rod first: &7click it with a &6Fish Pellet &7in your inventory")
+            }
             return
         }
         if (e.state != PlayerFishEvent.State.CAUGHT_FISH) return
         val caught = e.caught as? Item ?: return
+        // Casting needs bait, so this only happens in edge cases; then it is a normal vanilla catch.
+        if (!Bait.isBaited(rod)) return
 
-        if (!takePellet(e.player)) {
-            e.player.sendMessage(color("&cYou need &6Fish Pellet &cin your inventory to catch magic fish."))
-            return
-        }
+        // One bait = one catch. Reeling in without a fish keeps the bait.
+        Bait.setBaited(rod, false)
+        if (mainHand) inv.setItemInMainHand(rod) else inv.setItemInOffHand(rod)
+
         val fish = Fishes.roll() ?: return
         if (Minigame.enabled) {
             // The fish is only given if the player wins the minigame.
@@ -52,22 +66,30 @@ class FishingListener : Listener {
         }
     }
 
-    /** Removes exactly 1 Fish Pellet from the player's inventory. */
-    private fun takePellet(player: Player): Boolean {
-        val inv = player.inventory
-        for (slot in 0 until inv.size) {
-            val stack = inv.getItem(slot) ?: continue
-            if (!Items.isPellet(stack)) continue
-            if (stack.amount <= 1) {
-                inv.setItem(slot, null)
-            } else {
-                val copy = stack.clone()
-                copy.amount = stack.amount - 1
-                inv.setItem(slot, copy)
-            }
-            return true
+    /** Baiting: click the Magic Fishing Rod with a Fish Pellet on the cursor (1 pellet per bait). */
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    fun onBait(e: InventoryClickEvent) {
+        if (e.click != ClickType.LEFT && e.click != ClickType.RIGHT) return
+        val player = e.whoClicked as? Player ?: return
+        if (player.gameMode == GameMode.CREATIVE) return
+        val cursor = e.cursor
+        if (!Items.isPellet(cursor)) return
+        val rod = e.currentItem ?: return
+        if (!Items.isRod(rod)) return
+
+        e.isCancelled = true
+        if (Bait.isBaited(rod)) {
+            player.sendMessage(color("&7Your rod already has bait."))
+            return
         }
-        return false
+        val newRod = rod.clone()
+        Bait.setBaited(newRod, true)
+        e.currentItem = newRod
+
+        val rest = cursor!!.clone()
+        rest.amount = cursor.amount - 1
+        player.setItemOnCursor(if (rest.amount > 0) rest else null)
+        player.playSound(player.location, Sound.ENTITY_ITEM_PICKUP, 0.6f, 1.4f)
     }
 
     @EventHandler(ignoreCancelled = true)

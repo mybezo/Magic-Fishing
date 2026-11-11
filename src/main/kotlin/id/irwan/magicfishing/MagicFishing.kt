@@ -9,8 +9,10 @@ class MagicFishing : JavaPlugin() {
 
     override fun onEnable() {
         instance = this
-        Minigame.load(config)
         Items.setup(this)
+        // After Items.setup, so config migrations are applied first.
+        Minigame.load(config)
+        saveConfig()
         server.pluginManager.registerEvents(FishingListener(), this)
         getCommand("magicfishing")?.let {
             val cmd = MagicFishingCommand(this)
