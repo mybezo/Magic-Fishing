@@ -6,7 +6,8 @@ plugins {
 }
 
 group = "id.irwan.magicfishing"
-version = "1.0.0-EXPERIMENTAL"
+// Release builds pass -PreleaseVersion=<version> (from the git tag); local builds are dev builds.
+version = (findProperty("releaseVersion") as String?) ?: "1.0.0-DEV"
 
 repositories {
     mavenCentral()

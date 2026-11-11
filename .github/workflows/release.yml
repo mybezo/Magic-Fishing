@@ -1,0 +1,46 @@
+name: Release MagicFishing
+
+# Push a tag like v1.0.0 (stable) or v1.0.0-dev.1 (dev snapshot / pre-release)
+# to build the jar and publish a GitHub Release with it attached.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+      - name: Read version from tag
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if [[ "$VERSION" == *-* ]]; then echo "prerelease=true" >> "$GITHUB_OUTPUT"; else echo "prerelease=false" >> "$GITHUB_OUTPUT"; fi
+      - name: Build JAR
+        run: gradle shadowJar --no-daemon -PreleaseVersion=${{ steps.version.outputs.version }}
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Magic Fishing ${{ steps.version.outputs.version }}
+          prerelease: ${{ steps.version.outputs.prerelease }}
+          generate_release_notes: true
+          files: build/libs/MagicFishing-*.jar
+          body: |
+            ${{ steps.version.outputs.prerelease == 'true' && '> ⚠️ **Dev snapshot**: experimental build for testing. Back up your server before using it.' || '' }}
+
+            **Requirements:** Paper 1.20+, Java 17+, Slimefun4 RC-37.
+
+            **Install:** put `MagicFishing-${{ steps.version.outputs.version }}.jar` in `plugins/` next to Slimefun and restart the server.
+
+            See the [README](https://github.com/${{ github.repository }}#readme) for items, recipes and configuration.
