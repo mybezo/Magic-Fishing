@@ -99,6 +99,11 @@ object Fishes {
         "BEETROOT_SEEDS" to "&f", "MELON_SLICE" to "&c", "PUMPKIN" to "&6", "SUGAR_CANE" to "&a",
         "CACTUS" to "&2", "BAMBOO" to "&a", "KELP" to "&2", "SWEET_BERRIES" to "&c", "COCOA_BEANS" to "&6",
         "BROWN_MUSHROOM" to "&6", "RED_MUSHROOM" to "&c", "NETHER_WART" to "&4", "GLOW_BERRIES" to "&e",
+        "DANDELION" to "&e", "POPPY" to "&c", "BLUE_ORCHID" to "&b", "ALLIUM" to "&d", "AZURE_BLUET" to "&f",
+        "OXEYE_DAISY" to "&f", "CORNFLOWER" to "&9", "LILY_OF_THE_VALLEY" to "&f", "WITHER_ROSE" to "&8",
+        "SUNFLOWER" to "&e", "LILAC" to "&d", "ROSE_BUSH" to "&c", "PEONY" to "&d", "TORCHFLOWER" to "&6",
+        "PINK_PETALS" to "&d", "SPORE_BLOSSOM" to "&d", "PITCHER_PLANT" to "&b",
+        "OPEN_EYEBLOSSOM" to "&6", "CLOSED_EYEBLOSSOM" to "&7",
         "HONEYCOMB" to "&6", "HONEY_BOTTLE" to "&e", "HONEY_BLOCK" to "&6", "HONEYCOMB_BLOCK" to "&6",
         "CHORUS_FRUIT" to "&5", "TORCHFLOWER_SEEDS" to "&6", "PITCHER_POD" to "&b",
         "CHERRY_LEAVES" to "&d", "PALE_OAK_LEAVES" to "&7", "AZALEA_LEAVES" to "&a", "FLOWERING_AZALEA_LEAVES" to "&d"
@@ -230,6 +235,19 @@ object Fishes {
         mc(Rarity.COMMON, "WHEAT", "DRIED_KELP", "BONE_MEAL", "COD", "SALMON") +
             mc(Rarity.UNCOMMON, "TROPICAL_FISH", "PUFFERFISH")
 
+    /** All 16 dyes: one slot in the roll, then a random color. */
+    private val dyes = mc(Rarity.COMMON, *DYES.map { "${it}_DYE" }.toTypedArray()).inGroup("DYE")
+
+    /** Flowers: common flowers are one slot in the roll (random flower after); special flowers are rare. */
+    private val flowers =
+        mc(
+            Rarity.COMMON,
+            "DANDELION", "POPPY", "BLUE_ORCHID", "ALLIUM", "AZURE_BLUET", "RED_TULIP", "ORANGE_TULIP",
+            "WHITE_TULIP", "PINK_TULIP", "OXEYE_DAISY", "CORNFLOWER", "LILY_OF_THE_VALLEY",
+            "SUNFLOWER", "LILAC", "ROSE_BUSH", "PEONY", "PINK_PETALS", "OPEN_EYEBLOSSOM", "CLOSED_EYEBLOSSOM"
+        ).inGroup("FLOWER") +
+            mc(Rarity.RARE, "WITHER_ROSE", "TORCHFLOWER", "PITCHER_PLANT", "SPORE_BLOSSOM")
+
     /** Bee products. */
     private val honey =
         mc(Rarity.UNCOMMON, "HONEYCOMB", "HONEY_BOTTLE") +
@@ -306,7 +324,7 @@ object Fishes {
     )
 
     val all: List<FishType> =
-        (ores + logs + leaves + mobDrops + coloredBlocks + earth + farm + pelletIngredients + honey).filterNotNull() + slimefunDusts + slimefunIngots + slimefunAlloys + slimefunComponents
+        (ores + logs + leaves + mobDrops + coloredBlocks + earth + farm + pelletIngredients + dyes + flowers + honey).filterNotNull() + slimefunDusts + slimefunIngots + slimefunAlloys + slimefunComponents
 
     /** Chance (%) that a catch is a Slimefun fish instead of a Minecraft fish (configurable). */
     var slimefunChance: Double = 50.0

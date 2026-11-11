@@ -101,7 +101,7 @@ Every catch is rolled in three steps:
 
 1. **Category**: Minecraft fish or Slimefun fish (50 / 50 by default).
 2. **Rarity** tier.
-3. A random fish of that tier. Big color families (**wool, glass, glass panes, common farm crops**) count as
+3. A random fish of that tier. Big families (**wool, glass, glass panes, dyes, flowers, common farm crops**) count as
    *one* fish in this step, and then a random color or crop is picked, so they don't flood the Common pool.
 
 | Rarity | Tier chance | Per catch (Minecraft) | Per catch (Slimefun) | Icon |
@@ -119,9 +119,9 @@ The fish's **name color matches its output item**, and each fish's lore shows it
 
 | Rarity | Fish |
 |---|---|
-| **Common** | Coal, Copper · Oak / Spruce / Birch / Jungle / Acacia / Dark Oak / Mangrove Log and Leaves, Azalea Leaves · Rotten Flesh, Bone, Arrow, String, Spider Eye, Gunpowder, Leather, Feather, Egg, Beef, Porkchop, Chicken, Mutton, Ink Sac, Gold Nugget · All Wool · Glass and all Stained Glass · Glass Pane and all Stained Glass Panes · Stone, Cobblestone, Gravel, Sand, Diorite, Granite, Andesite, Clay, Clay Ball, Snow Block, Snowball, Flint, Bone Block, Netherrack, Lily Pad, Ice · Wheat, Dried Kelp, Bone Meal, Cod, Salmon · Farm crops (Seeds, Carrot, Potato, Beetroot, Beetroot Seeds, Melon Slice, Pumpkin, Sugar Cane, Cactus, Bamboo, Kelp, Sweet Berries, Cocoa Beans, Mushrooms) |
+| **Common** | Coal, Copper · Oak / Spruce / Birch / Jungle / Acacia / Dark Oak / Mangrove Log and Leaves, Azalea Leaves · Rotten Flesh, Bone, Arrow, String, Spider Eye, Gunpowder, Leather, Feather, Egg, Beef, Porkchop, Chicken, Mutton, Ink Sac, Gold Nugget · All Wool · Glass and all Stained Glass · Glass Pane and all Stained Glass Panes · Stone, Cobblestone, Gravel, Sand, Diorite, Granite, Andesite, Clay, Clay Ball, Snow Block, Snowball, Flint, Bone Block, Netherrack, Lily Pad, Ice · Wheat, Dried Kelp, Bone Meal, Cod, Salmon · All 16 Dyes · Flowers (Dandelion, Poppy, Blue Orchid, Allium, Azure Bluet, all Tulips, Oxeye Daisy, Cornflower, Lily of the Valley, Sunflower, Lilac, Rose Bush, Peony, Pink Petals, Eyeblossoms) · Farm crops (Seeds, Carrot, Potato, Beetroot, Beetroot Seeds, Melon Slice, Pumpkin, Sugar Cane, Cactus, Bamboo, Kelp, Sweet Berries, Cocoa Beans, Mushrooms) |
 | **Uncommon** | Iron, Gold, Lapis, Redstone, Quartz · Cherry / Pale Oak Log and Leaves, Flowering Azalea Leaves, Crimson / Warped Stem · Slime Ball, Magma Cream, Rabbit, Rabbit Hide, Glow Ink Sac, Prismarine Shard, Prismarine Crystals · Tinted Glass · End Stone, Soul Sand, Obsidian, Magma Block, Quartz Block, Water Bucket, Lava Bucket, Packed Ice · Nether Wart, Glow Berries · Tropical Fish, Pufferfish · Honeycomb, Honey Bottle |
-| **Rare** | Diamond, Emerald · Ender Pearl, Blaze Rod, Ghast Tear, Phantom Membrane, Rabbit Foot, Armadillo Scute, Breeze Rod, Nautilus Shell, Turtle Scute · Blue Ice · Chorus Fruit, Torchflower Seeds, Pitcher Pod · Honey Block, Honeycomb Block |
+| **Rare** | Diamond, Emerald · Ender Pearl, Blaze Rod, Ghast Tear, Phantom Membrane, Rabbit Foot, Armadillo Scute, Breeze Rod, Nautilus Shell, Turtle Scute · Blue Ice · Chorus Fruit, Torchflower Seeds, Pitcher Pod · Wither Rose, Torchflower, Pitcher Plant, Spore Blossom · Honey Block, Honeycomb Block |
 | **Epic** | Shulker Shell, Wither Skeleton Skull, Totem of Undying |
 | **Legendary** | Netherite Scrap, Nether Star |
 
