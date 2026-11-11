@@ -36,6 +36,24 @@ jobs:
           VERSION="${VERSION#v}"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           if [[ "$VERSION" == *-* ]]; then echo "prerelease=true" >> "$GITHUB_OUTPUT"; else echo "prerelease=false" >> "$GITHUB_OUTPUT"; fi
+      - name: Release notes from CHANGELOG.md
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          {
+            if [[ "${{ steps.version.outputs.prerelease }}" == "true" ]]; then
+              echo "> ⚠️ **Dev snapshot**: experimental build for testing. Back up your server before using it."
+              echo
+            fi
+            echo "**Requirements:** Paper 1.20+, Java 17+, Slimefun4 RC-37."
+            echo
+            echo "**Install:** put \`MagicFishing-$VERSION.jar\` in \`plugins/\` next to Slimefun and restart the server."
+            echo
+            # The "## <version>" section of CHANGELOG.md, without its heading.
+            awk -v v="## $VERSION" '$0 == v {found=1; next} found && /^## / {exit} found' CHANGELOG.md
+            echo
+            echo "See the [README](https://github.com/${{ github.repository }}#readme) for items, recipes and configuration."
+          } > release-notes.md
+          cat release-notes.md
       - name: Build JAR
         run: gradle shadowJar --no-daemon -PreleaseVersion=${{ steps.version.outputs.version }}
       - name: Publish release
@@ -45,13 +63,6 @@ jobs:
           target_commitish: ${{ github.sha }}
           name: Magic Fishing ${{ steps.version.outputs.version }}
           prerelease: ${{ steps.version.outputs.prerelease }}
-          generate_release_notes: true
+          body_path: release-notes.md
           files: build/libs/MagicFishing-*.jar
-          body: |
-            ${{ steps.version.outputs.prerelease == 'true' && '> ⚠️ **Dev snapshot**: experimental build for testing. Back up your server before using it.' || '' }}
-
-            **Requirements:** Paper 1.20+, Java 17+, Slimefun4 RC-37.
-
-            **Install:** put `MagicFishing-${{ steps.version.outputs.version }}.jar` in `plugins/` next to Slimefun and restart the server.
-
-            See the [README](https://github.com/${{ github.repository }}#readme) for items, recipes and configuration.
+          overwrite_files: true
