@@ -12,7 +12,7 @@ generation needed, just water.
 
 - **Magic Fishing Rod**: catches *resource fish* for both Minecraft and Slimefun materials.
 - **Rarity system**: Common, Uncommon, Rare, Epic and Legendary, based on how hard each resource is to obtain or craft.
-- **Rod bait**: every cast needs a Fish Pellet put on the rod by hand, which stops auto-fish mods and AFK fishing.
+- **Rod bait**: load up to 64 Fish Pellets into the rod by hand; each fish caught uses 1. An empty rod can't be cast, which limits auto-fish mods and AFK fishing.
 - **Optional catch minigame**: a boss-bar timing challenge (off by default). Works on Java and Bedrock (Geyser).
 - **Magic Fish Refinery I / II / III**: turns a fish into its resource. **The fish is never consumed.**
 - **Magic Aquarium**: breeds 2 fish of the same type into a new one, using Fish Pellet.
@@ -56,8 +56,8 @@ Aqua Core ────┼──► Magic Fishing Rod ──► fish! ──► M
 1. Craft **Fish Pellet** (bait and fish food). One craft gives 8.
 2. Craft an **Aqua Core**. It is used in the rod and every machine.
 3. Craft the **Magic Fishing Rod**.
-4. **Bait the rod**: open your inventory, pick up a Fish Pellet and click the rod with it.
-5. Fish normally. Each fish caught uses the bait, so bait the rod again before the next cast.
+4. **Bait the rod**: open your inventory, pick up Fish Pellets and click the rod with them (up to 64 at once).
+5. Fish normally. Each fish caught uses 1 pellet; reload the rod when it runs out.
 6. Put the fish in a **Magic Fish Refinery** to get its resource, over and over.
 7. Use the **Magic Aquarium** to breed more fish of a type.
 
@@ -148,10 +148,12 @@ Magic fish **cannot be eaten, cooked** (furnace, smoker, campfire) **or fed** to
 
 ## 🪱 Rod bait
 
-- A Magic Fishing Rod can only be **cast when it has bait**. The rod's lore shows `Bait: Fish Pellet` or `Bait: None`.
-- To bait it, open your inventory, pick up a **Fish Pellet** with the cursor and **click the rod** (left or right click). This uses 1 pellet.
-- Catching a fish uses the bait. Reeling in without a fish keeps it.
-- Auto-fish mods and AFK setups can't re-bait the rod, so they stop after one fish.
+- A Magic Fishing Rod can only be **cast when it has bait**. The rod's lore shows `Bait: 37/64 Fish Pellet` or `Bait: None`.
+- To load it, open your inventory, pick up **Fish Pellets** with the cursor and **click the rod**:
+  - **Left click**: load as many as fit (up to **64**, `fishing.max-bait`).
+  - **Right click**: load 1.
+- Each fish caught uses **1 pellet**. Reeling in without a fish uses nothing.
+- Auto-fish mods and AFK setups can't reload the rod, so they stop once it is empty.
 
 ---
 
@@ -235,6 +237,7 @@ Alias: `/mf` = `/magicfishing`.
 ```yaml
 fishing:
   slimefun-chance: 50.0          # % of catches that are Slimefun fish
+  max-bait: 64                   # Fish Pellets a rod can hold
   rarity-chance:                 # relative weights, don't need to add up to 100
     COMMON: 50.0
     UNCOMMON: 28.0
@@ -271,7 +274,7 @@ research costs are in `plugins/Slimefun/Researches.yml`.
 
 ## 📱 Bedrock (Geyser) notes
 
-- Rod bait works on Bedrock: select the Fish Pellet, then tap the rod.
+- Rod bait works on Bedrock: select the Fish Pellets, then tap the rod.
 - The minigame and boss bar work on Bedrock.
 - Fish are plain vanilla items, so they look and stack the same on Bedrock.
 

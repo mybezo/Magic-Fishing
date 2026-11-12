@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Rod bait holds up to 64 Fish Pellets** (`fishing.max-bait`). Left click the rod with pellets to load as many as fit, right click to load 1. Each fish caught uses 1 pellet, and the lore shows the count (e.g. `Bait: 37/64 Fish Pellet`). Rods baited in 1.0.0-dev.1 keep their 1 bait.
+
 ## 1.0.0-dev.1
 
 First public dev snapshot of Magic Fishing.

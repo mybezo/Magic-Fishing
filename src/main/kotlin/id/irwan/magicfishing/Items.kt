@@ -133,10 +133,10 @@ object Items {
                 "",
                 "&8\u25B8 &7Slimefun fish chance: &e${pct(Fishes.slimefunChance.coerceIn(0.0, 100.0))}%",
                 "",
-                "&7Needs bait for every cast: in your",
-                "&7inventory, click the rod while holding",
-                "&7a &6Fish Pellet &7on your cursor.",
-                "&7One bait is used per fish caught.",
+                "&7Needs bait to cast: in your inventory,",
+                "&7click the rod with &6Fish Pellet &7on your cursor.",
+                "&7Left click: load all &8(max ${Bait.max})&7, right click: load 1.",
+                "&7Each fish caught uses &f1 &7pellet.",
                 "",
                 "&8Cannot be enchanted",
                 "",
@@ -269,6 +269,8 @@ object Items {
     fun loadSettings(cfg: FileConfiguration) {
         fun cDouble(path: String, def: Double): Double { cfg.addDefault(path, def); return cfg.getDouble(path, def) }
         Fishes.slimefunChance = cDouble("fishing.slimefun-chance", 50.0)
+        cfg.addDefault("fishing.max-bait", 64)
+        Bait.max = cfg.getInt("fishing.max-bait", 64).coerceIn(1, 1024)
         Rarity.values().forEach { it.chance = cDouble("fishing.rarity-chance.${it.name}", it.defaultChance) }
     }
 

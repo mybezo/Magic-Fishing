@@ -40,7 +40,7 @@ class FishingListener : Listener {
                 e.isCancelled = true
             } else if (!Bait.isBaited(rod)) {
                 e.isCancelled = true
-                actionBar(e.player, "&cBait your rod first: &7click it with a &6Fish Pellet &7in your inventory")
+                actionBar(e.player, "&cBait your rod first: &7click it with &6Fish Pellet &7in your inventory")
             }
             return
         }
@@ -49,9 +49,11 @@ class FishingListener : Listener {
         // Casting needs bait, so this only happens in edge cases; then it is a normal vanilla catch.
         if (!Bait.isBaited(rod)) return
 
-        // One bait = one catch. Reeling in without a fish keeps the bait.
-        Bait.setBaited(rod, false)
+        // Each fish caught uses 1 pellet. Reeling in without a fish keeps the bait.
+        val left = Bait.count(rod) - 1
+        Bait.setCount(rod, left)
         if (mainHand) inv.setItemInMainHand(rod) else inv.setItemInOffHand(rod)
+        if (left == 0) actionBar(e.player, "&eYour rod is out of bait")
 
         val fish = Fishes.roll() ?: return
         if (Minigame.enabled) {
@@ -66,7 +68,10 @@ class FishingListener : Listener {
         }
     }
 
-    /** Baiting: click the Magic Fishing Rod with a Fish Pellet on the cursor (1 pellet per bait). */
+    /**
+     * Baiting: click the Magic Fishing Rod with Fish Pellets on the cursor.
+     * Left click loads as many as fit (up to Bait.max), right click loads 1.
+     */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onBait(e: InventoryClickEvent) {
         if (e.click != ClickType.LEFT && e.click != ClickType.RIGHT) return
@@ -78,17 +83,23 @@ class FishingListener : Listener {
         if (!Items.isRod(rod)) return
 
         e.isCancelled = true
-        if (Bait.isBaited(rod)) {
-            player.sendMessage(color("&7Your rod already has bait."))
+        val current = Bait.count(rod)
+        val space = Bait.max - current
+        if (space <= 0) {
+            actionBar(player, "&7Your rod is full of bait &8(&6$current&8/&6${Bait.max}&8)")
             return
         }
+        val pellets = cursor!!.amount
+        val add = if (e.click == ClickType.RIGHT) 1 else minOf(space, pellets)
+
         val newRod = rod.clone()
-        Bait.setBaited(newRod, true)
+        Bait.setCount(newRod, current + add)
         e.currentItem = newRod
 
-        val rest = cursor!!.clone()
-        rest.amount = cursor.amount - 1
+        val rest = cursor.clone()
+        rest.amount = pellets - add
         player.setItemOnCursor(if (rest.amount > 0) rest else null)
+        actionBar(player, "&aBait loaded: &6${current + add}&7/&6${Bait.max} Fish Pellet")
         player.playSound(player.location, Sound.ENTITY_ITEM_PICKUP, 0.6f, 1.4f)
     }
 
