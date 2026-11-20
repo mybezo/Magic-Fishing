@@ -8,6 +8,8 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack
 import io.github.thebusybiscuit.slimefun4.api.items.groups.SubItemGroup
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType
 import io.github.thebusybiscuit.slimefun4.api.researches.Research
+import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable
+import io.github.thebusybiscuit.slimefun4.utils.HeadTexture
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -35,11 +37,25 @@ class MagicRod(
     }
 }
 
+/** Bait Bag: stores Fish Pellets and cannot be placed or enchanted. */
+class BaitBagItem(
+    group: ItemGroup,
+    item: SlimefunItemStack,
+    recipeType: RecipeType,
+    recipe: Array<ItemStack?>
+) : SlimefunItem(group, item, recipeType, recipe), NotPlaceable {
+    init {
+        enchantable = false
+        disenchantable = false
+    }
+}
+
 object Items {
 
     const val PELLET = "MF_PELLET"
     const val AQUA_CORE = "MF_AQUA_CORE"
     const val ROD = "MF_MAGIC_ROD"
+    const val BAIT_BAG = "MF_BAIT_BAG"
     const val AQUARIUM = "MF_MAGIC_AQUARIUM"
     private const val CONFIG_VERSION = 5
 
@@ -178,6 +194,32 @@ object Items {
         ).register(Addon)
         val rod = sf(ROD)
 
+        // ===== Bait Bag =====
+        BaitBagItem(
+            gRod,
+            SlimefunItemStack(
+                BAIT_BAG, HeadTexture.BACKPACK, "&6Bait Bag",
+                "", "&7Stores &6Fish Pellet &7and automatically",
+                "&7refills your &bMagic Fishing Rod &7when empty.",
+                "",
+                "&8\u25B8 &7Capacity: &f${BaitBag.capacity} Fish Pellet",
+                "&8\u25B8 &7Auto refill: &f${if (BaitBag.autoRefill) "Enabled" else "Disabled"}",
+                "",
+                "&7In inventory: click with &6Fish Pellet &7on cursor",
+                "&7  Left click: load all, right click: load 1.",
+                "&7In hand: &fRight click &7to store pellets from inventory,",
+                "&7  &fShift + Right click &7to withdraw up to 64.",
+                "",
+                BaitBag.EMPTY_LORE
+            ),
+            RecipeType.ENHANCED_CRAFTING_TABLE,
+            arrayOf(
+                mc(Material.LEATHER), aqua, mc(Material.LEATHER),
+                sf("MAGIC_LUMP_2"), mc(Material.CHEST), sf("MAGIC_LUMP_2"),
+                mc(Material.LEATHER), sf("HARDENED_METAL_INGOT"), mc(Material.LEATHER)
+            )
+        ).register(Addon)
+
         // ===== Fish =====
         for (fish in Fishes.all.sortedBy { it.rarity }) {
             MagicFish(
@@ -305,6 +347,7 @@ object Items {
         research("fish_refinery_2", 78_350_05, "Magic Fish Refinery II", 35, "MF_FISH_REFINERY_2")
         research("fish_refinery_3", 78_350_06, "Magic Fish Refinery III", 45, "MF_FISH_REFINERY_3")
         research("magic_aquarium", 78_350_07, "Magic Aquarium", 30, AQUARIUM)
+        research("bait_bag", 78_350_08, "Bait Bag", 25, BAIT_BAG)
 
         cfg.setComments("machines", MACHINES_COMMENT)
 
@@ -350,6 +393,10 @@ object Items {
         Fishes.slimefunChance = cDouble("fishing.slimefun-chance", 50.0)
         cfg.addDefault("fishing.max-bait", 64)
         Bait.max = cfg.getInt("fishing.max-bait", 64).coerceIn(1, 1024)
+        cfg.addDefault("bait-bag.capacity", 1024)
+        BaitBag.capacity = cfg.getInt("bait-bag.capacity", 1024).coerceIn(64, 65536)
+        cfg.addDefault("bait-bag.auto-refill", true)
+        BaitBag.autoRefill = cfg.getBoolean("bait-bag.auto-refill", true)
         Rarity.values().forEach { it.chance = cDouble("fishing.rarity-chance.${it.name}", it.defaultChance) }
     }
 
@@ -391,6 +438,17 @@ object Items {
     fun isPellet(stack: ItemStack?): Boolean {
         if (stack == null || stack.type != Material.BROWN_DYE) return false
         return SlimefunItem.getByItem(stack)?.id == PELLET
+    }
+
+    fun isBaitBag(stack: ItemStack?): Boolean {
+        if (stack == null || stack.type != Material.PLAYER_HEAD) return false
+        return SlimefunItem.getByItem(stack)?.id == BAIT_BAG
+    }
+
+    fun pelletItem(amount: Int = 1): ItemStack {
+        val item = sf(PELLET)
+        item.amount = amount.coerceIn(1, item.maxStackSize)
+        return item
     }
 
     fun fishItem(type: FishType): ItemStack {

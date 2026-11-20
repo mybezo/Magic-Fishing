@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Bait Bag** (`MF_BAIT_BAG`): stores up to 1,024 Fish Pellets in a single slot (`bait-bag.capacity`) and automatically refills an empty Magic Fishing Rod from inventory (`bait-bag.auto-refill`). Load by clicking with pellets or right-clicking in hand to deposit from inventory; Shift + right-click to withdraw up to 64.
 - **Fix**: Networks Grabber (and other cargo that passes no item) no longer crashes on Magic Fishing machines.
 - **Fix**: Oil Bucket and Fuel Bucket fish now produce their bucket (Slimefun ids `BUCKET_OF_OIL` / `BUCKET_OF_FUEL`).
 - **More Slimefun fish**: the rest of the Slimefun Resources category: Sulfate, Carbon, Silicon, Compressed Carbon, Ferrosilicon, Magnesium Salt, Synthetic Sapphire, Oil Bucket, Carbon Chunk, Raw Carbonado, Synthetic Diamond, Synthetic Emerald, Fuel Bucket and Carbonado (Boosted Uranium, Nether Ice, Enriched Nether Ice, Neptunium and Plutonium are left out).

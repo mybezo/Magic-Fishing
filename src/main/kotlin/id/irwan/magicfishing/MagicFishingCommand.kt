@@ -45,7 +45,7 @@ class MagicFishingCommand(private val plugin: MagicFishing) : TabExecutor {
         if (sender.hasPermission(admin)) {
             sender.sendMessage(color("&b/$label give <player> <item> [amount] &7- Give a Magic Fishing item"))
             sender.sendMessage(color("&b/$label list [page] &7- List all Magic Fishing item ids"))
-            sender.sendMessage(color("&b/$label reload &7- Reload fishing chances and minigame settings"))
+            sender.sendMessage(color("&b/$label reload &7- Reload fishing, bait bag and minigame settings"))
         }
     }
 
@@ -92,7 +92,7 @@ class MagicFishingCommand(private val plugin: MagicFishing) : TabExecutor {
         val cfg = plugin.config
         Items.loadSettings(cfg)
         Minigame.load(cfg)
-        msg(sender, "&aReloaded fishing chances and minigame settings.")
+        msg(sender, "&aReloaded fishing, bait bag and minigame settings.")
         sender.sendMessage(color("&7Machine energy / speed, pellet cost and item lore update after a restart."))
     }
 

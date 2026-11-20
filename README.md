@@ -13,6 +13,7 @@ generation needed, just water.
 - **Magic Fishing Rod**: catches *resource fish* for both Minecraft and Slimefun materials.
 - **Rarity system**: Common, Uncommon, Rare, Epic and Legendary, based on how hard each resource is to obtain or craft.
 - **Rod bait**: load up to 64 Fish Pellets into the rod by hand; each fish caught uses 1. An empty rod can't be cast, which limits auto-fish mods and AFK fishing.
+- **Bait Bag**: stores up to **1,024 Fish Pellets** in one slot and automatically refills your rod when it runs out of bait (configurable).
 - **Optional catch minigame**: a boss-bar timing challenge (off by default). Works on Java and Bedrock (Geyser).
 - **Magic Fish Refinery I / II / III**: turns a fish into its resource. **The fish is never consumed.**
 - **Magic Aquarium**: breeds 2 fish of the same type into a new one, using Fish Pellet.
@@ -77,6 +78,7 @@ Aqua Core ────┼──► Magic Fishing Rod ──► fish! ──► M
 | Item | Recipe type | Recipe |
 |---|---|---|
 | **Magic Fishing Rod** | Magic Workbench | Magical Lump III, Aqua Core, Magical Lump III / Hardened Metal, Fishing Rod, Hardened Metal / Magical Lump III, Aqua Core, Magical Lump III |
+| **Bait Bag** | Enhanced Crafting Table | Leather, Aqua Core, Leather / Magical Lump II, Chest, Magical Lump II / Leather, Hardened Metal, Leather |
 
 ### Machines
 
@@ -154,6 +156,15 @@ Magic fish **cannot be eaten, cooked** (furnace, smoker, campfire) **or fed** to
   - **Right click**: load 1.
 - Each fish caught uses **1 pellet**. Reeling in without a fish uses nothing.
 - Auto-fish mods and AFK setups can't reload the rod, so they stop once it is empty.
+
+### 🎒 Bait Bag
+
+- Craft a **Bait Bag** (found under **Magic Fishing > Rod**) to carry up to **1,024 Fish Pellets** (`bait-bag.capacity`) in a single slot.
+- **Storing pellets:**
+  - In your inventory, pick up Fish Pellets on the cursor and **click the Bait Bag** (left click: load all, right click: load 1).
+  - Or hold the Bait Bag and **right click** to pull all Fish Pellets from your inventory into the bag.
+- **Withdrawing pellets:** hold the Bait Bag and **Shift + right click** to withdraw up to 64 Fish Pellets. You can also pick up the Bait Bag on your cursor and click a Magic Fishing Rod to refill it directly.
+- **Auto refill:** when carried in your inventory (or off-hand) and `bait-bag.auto-refill` is `true`, an empty rod is automatically refilled up to `fishing.max-bait` when it hits 0 bait after a catch or when casting. Server owners who want strict manual reloading can set `bait-bag.auto-refill: false` in `config.yml`.
 
 ---
 
@@ -234,6 +245,7 @@ Items are unlocked with Slimefun researches (XP levels). Costs can be changed in
 | Fish Pellet | 8 | Fish Pellet |
 | Aqua Core | 15 | Aqua Core |
 | Magic Fishing Rod | 20 | Magic Fishing Rod |
+| Bait Bag | 25 | Bait Bag |
 | Magic Fish Refinery I | 25 | Magic Fish Refinery I |
 | Magic Aquarium | 30 | Magic Aquarium |
 | Magic Fish Refinery II | 35 | Magic Fish Refinery II |
@@ -274,6 +286,10 @@ fishing:
     EPIC: 6.0
     LEGENDARY: 1.0
 
+bait-bag:
+  capacity: 1024                 # Fish Pellets a Bait Bag can hold (64 - 65536)
+  auto-refill: true              # automatically refill empty rods from a Bait Bag in inventory
+
 minigame:
   enabled: false                 # true = timing minigame on every catch
   seconds: 5.0                   # time limit
@@ -313,7 +329,7 @@ machines:
 - Changes need a **server restart**.
 
 
-`/mf reload` applies the `fishing` and `minigame` settings right away. Machine energy and speed, the
+`/mf reload` applies the `fishing`, `bait-bag` and `minigame` settings right away. Machine energy and speed, the
 aquarium pellet cost and the chances shown in item lore are applied after a **restart**.
 
 Slimefun's own per-item settings (enabling/disabling items) are in `plugins/Slimefun/Items.yml`, and
@@ -323,7 +339,7 @@ research costs are in `plugins/Slimefun/Researches.yml`.
 
 ## 📱 Bedrock (Geyser) notes
 
-- Rod bait works on Bedrock: select the Fish Pellets, then tap the rod.
+- Rod bait and Bait Bag inventory loading work on Bedrock: select Fish Pellets, then tap the rod or Bait Bag. Right-click deposit and Shift + right-click withdraw also work on Bedrock.
 - The minigame and boss bar work on Bedrock.
 - Fish are plain vanilla items, so they look and stack the same on Bedrock.
 
