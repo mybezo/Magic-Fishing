@@ -18,7 +18,7 @@ generation needed, just water.
 - **Magic Aquarium**: breeds 2 fish of the same type into a new one, using Fish Pellet.
 - **200+ resource fish**: ores, logs, leaves, mob drops, wool, glass, stone types, farm crops, honey, Slimefun dusts, ingots, alloys, components and more.
 - **Stackable fish** (up to 64): fish are vanilla fish items, so they stack on every version, Java and Bedrock.
-- Rods **cannot be enchanted** (enchanting table, anvil or Slimefun Auto Enchanter).
+- Rods are **unbreakable** and **cannot be enchanted** (enchanting table, anvil or Slimefun Auto Enchanter).
 - **Admin commands** (`/mf give`, `/mf list`, `/mf reload`) and Slimefun **researches**.
 - **GitHub button** in the Magic Fishing guide category.
 - Almost everything is **configurable**.

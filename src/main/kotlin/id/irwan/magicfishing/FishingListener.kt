@@ -21,6 +21,7 @@ import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
+import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.inventory.EquipmentSlot
@@ -41,6 +42,8 @@ class FishingListener : Listener {
             } else if (!Bait.isBaited(rod)) {
                 e.isCancelled = true
                 actionBar(e.player, "&cBait your rod first: &7click it with &6Fish Pellet &7in your inventory")
+            } else {
+                Items.ensureUnbreakable(rod)
             }
             return
         }
@@ -93,6 +96,7 @@ class FishingListener : Listener {
         val add = if (e.click == ClickType.RIGHT) 1 else minOf(space, pellets)
 
         val newRod = rod.clone()
+        Items.ensureUnbreakable(newRod)
         Bait.setCount(newRod, current + add)
         e.currentItem = newRod
 
@@ -148,7 +152,13 @@ class FishingListener : Listener {
         if (Items.fishOf(stack) != null) e.isCancelled = true
     }
 
-    // ===== Magic rods cannot be enchanted =====
+    // ===== Magic rods are unbreakable and cannot be enchanted =====
+
+    /** Protects Magic Fishing Rods from all durability loss (including rods crafted on older builds). */
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    fun onRodDamage(e: PlayerItemDamageEvent) {
+        if (Items.isRod(e.item)) e.isCancelled = true
+    }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onPrepareEnchant(e: PrepareItemEnchantEvent) {

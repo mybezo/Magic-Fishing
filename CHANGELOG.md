@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Fix**: Magic Fishing Rods are now explicitly unbreakable (`Unbreakable` tag + `PlayerItemDamageEvent` cancelled), preventing durability loss when reeling in early, hooking blocks/entities, or getting non-magic catches.
 - **Fix**: Networks Grabber (and other cargo that passes no item) no longer crashes on Magic Fishing machines.
 - **Fix**: Oil Bucket and Fuel Bucket fish now produce their bucket (Slimefun ids `BUCKET_OF_OIL` / `BUCKET_OF_FUEL`).
 - **More Slimefun fish**: the rest of the Slimefun Resources category: Sulfate, Carbon, Silicon, Compressed Carbon, Ferrosilicon, Magnesium Salt, Synthetic Sapphire, Oil Bucket, Carbon Chunk, Raw Carbonado, Synthetic Diamond, Synthetic Emerald, Fuel Bucket and Carbonado (Boosted Uranium, Nether Ice, Enriched Nether Ice, Neptunium and Plutonium are left out).

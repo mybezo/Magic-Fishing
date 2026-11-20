@@ -12,6 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.Damageable
 
 /** Custom fish item - used by machines and listeners to recognise fish. */
 class MagicFish(
@@ -22,7 +23,7 @@ class MagicFish(
     val type: FishType
 ) : SlimefunItem(group, item, recipeType, recipe)
 
-/** Magic Fishing Rod: cannot be enchanted or disenchanted by Slimefun machines. */
+/** Magic Fishing Rod: unbreakable, cannot be enchanted or disenchanted by Slimefun machines. */
 class MagicRod(
     group: ItemGroup,
     item: SlimefunItemStack,
@@ -168,7 +169,7 @@ object Items {
                 "&8Cannot be enchanted",
                 "",
                 Bait.EMPTY_LORE
-            ),
+            ).also { ensureUnbreakable(it) },
             RecipeType.MAGIC_WORKBENCH,
             arrayOf(
                 sf("MAGIC_LUMP_3"), aqua, sf("MAGIC_LUMP_3"),
@@ -355,6 +356,16 @@ object Items {
 
     /** Refinery seconds per output for tier I / II / III. */
     private val REFINERY_SECONDS = mapOf(1 to 15, 2 to 8, 3 to 2)
+
+    /** Marks a rod as unbreakable and clears any pre-existing durability damage from older builds. */
+    fun ensureUnbreakable(item: ItemStack) {
+        val meta = item.itemMeta ?: return
+        val damaged = (meta as? Damageable)?.let { it.damage > 0 } == true
+        if (meta.isUnbreakable && !damaged) return
+        meta.isUnbreakable = true
+        if (meta is Damageable) meta.damage = 0
+        item.itemMeta = meta
+    }
 
     /** Enchant glint without showing an enchantment (used for Epic / Legendary fish). */
     private fun addGlint(item: ItemStack) {
