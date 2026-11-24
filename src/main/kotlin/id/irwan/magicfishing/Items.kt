@@ -359,9 +359,21 @@ object Items {
     /** Enchant glint without showing an enchantment (used for Epic / Legendary fish). */
     private fun addGlint(item: ItemStack) {
         val meta = item.itemMeta ?: return
-        val ench = org.bukkit.enchantments.Enchantment.getByKey(NamespacedKey.minecraft("lure")) ?: return
-        meta.addEnchant(ench, 1, true)
-        meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS)
+        // Minecraft 1.20.5+: a real glint without any enchantment, so no plugin sees an "illegal"
+        // enchant on a fish. Called by reflection because the plugin compiles against 1.20.4.
+        val glintOverride = try {
+            meta.javaClass.getMethod("setEnchantmentGlintOverride", java.lang.Boolean::class.java)
+        } catch (_: NoSuchMethodException) {
+            null
+        }
+        if (glintOverride != null) {
+            glintOverride.invoke(meta, true)
+        } else {
+            // Older servers: hidden enchantment for the glint.
+            val ench = org.bukkit.enchantments.Enchantment.getByKey(NamespacedKey.minecraft("lure")) ?: return
+            meta.addEnchant(ench, 1, true)
+            meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS)
+        }
         item.itemMeta = meta
     }
 

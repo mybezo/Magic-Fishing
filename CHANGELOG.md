@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Fix**: magic fish are given straight to the inventory (dropped at the player's feet if it is full) instead of flying from the hook, so they can't get lost on the way (e.g. clear-lag). Epic / Legendary fish use the built-in glint (1.20.5+) instead of a hidden enchantment.
 - **Fix**: the Magic Fishing Rod can't be used together with another fishing rod in the other hand. Casting is blocked (with a message) while both hands hold a fishing rod, so an enchanted vanilla rod can't be combined with the Magic Rod.
 - **Fix**: Networks Grabber (and other cargo that passes no item) no longer crashes on Magic Fishing machines.
 - **Fix**: Oil Bucket and Fuel Bucket fish now produce their bucket (Slimefun ids `BUCKET_OF_OIL` / `BUCKET_OF_FUEL`).

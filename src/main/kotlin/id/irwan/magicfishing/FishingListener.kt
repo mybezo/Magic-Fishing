@@ -71,7 +71,11 @@ class FishingListener : Listener {
             Minigame.start(e.player, fish)
             return
         }
-        caught.itemStack = Items.fishItem(fish)
+        // Give the fish straight to the player instead of replacing the flying vanilla item: an item
+        // entity in the world can be lost (clear-lag, other plugins, landing somewhere else).
+        caught.remove()
+        val player = e.player
+        player.inventory.addItem(Items.fishItem(fish)).values.forEach { player.world.dropItemNaturally(player.location, it) }
         if (fish.rarity >= Rarity.EPIC) {
             e.player.sendMessage(color("&7You caught ${fish.rarity.display} &7fish: &r${fish.name}&7!"))
         }
