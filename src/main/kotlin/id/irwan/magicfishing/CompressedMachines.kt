@@ -66,7 +66,7 @@ object CompressedMachines {
         refineries: List<RefinerySpec>,
         visibleGroup: ItemGroup,
         hiddenGroup: ItemGroup,
-        lore: (energy: Int, seconds: Double) -> Array<String>
+        lore: (energy: Int, timing: MachineSpeed.Timing) -> Array<String>
     ): Int {
         val cfg = loadConfig(plugin, refineries)
         if (!cfg.getBoolean("enabled", true)) return 0
@@ -89,7 +89,7 @@ object CompressedMachines {
                 val energy = (spec.energy.toLong() * multiplier).coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
                 val stack = SlimefunItemStack(
                     id, spec.block, "&aMagic Fish Refinery ${roman(spec.tier)} ($multiplier)",
-                    *lore(energy, spec.seconds),
+                    *lore(energy, MachineSpeed.get(spec.id)),
                     "",
                     "&7Combines &a$multiplier &7machines into one."
                 )

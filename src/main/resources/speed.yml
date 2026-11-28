@@ -1,0 +1,21 @@
+# Machine speed
+# Every machine has a fixed base time. Speed 1 = the base time,
+# 2 = twice as fast, 0.5 = half as fast. Decimals are allowed (e.g. 1.5).
+#
+# Time per output = base time / speed
+#   Magic Fish Refinery I    base 15 s   (max speed 30)
+#   Magic Fish Refinery II   base 8 s    (max speed 16)
+#   Magic Fish Refinery III  base 2 s    (max speed 4)
+#   Magic Aquarium           base 180 s  (max speed 360, time per new fish)
+#
+# Machines run on Slimefun ticks (default 0.5 s), so the time is rounded to 0.5 s
+# and can't be faster than 0.5 s; a speed above the maximum uses the maximum.
+# 0, negative or invalid values use 1 and are logged in the console.
+# Compressed refineries (8 - 64) use the speed of their original refinery.
+#
+# Changes need a server restart. Missing machines are added automatically.
+
+MF_FISH_REFINERY_1: 1
+MF_FISH_REFINERY_2: 1
+MF_FISH_REFINERY_3: 1
+MF_MAGIC_AQUARIUM: 1

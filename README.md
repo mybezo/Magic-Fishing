@@ -287,31 +287,38 @@ minigame:
     LEGENDARY: { zone-size: 3, speed: 1.3 }
 
 machines:
-  MF_FISH_REFINERY_1: { energy-per-tick: 100,  seconds-per-output: 15 }
-  MF_FISH_REFINERY_2: { energy-per-tick: 250,  seconds-per-output: 8 }
-  MF_FISH_REFINERY_3: { energy-per-tick: 1000, seconds-per-output: 2 }
-  MF_MAGIC_AQUARIUM:  { energy-per-tick: 150,  seconds-per-output: 180, pellets-per-fish: 16 }
+  MF_FISH_REFINERY_1: { energy-per-tick: 100 }
+  MF_FISH_REFINERY_2: { energy-per-tick: 250 }
+  MF_FISH_REFINERY_3: { energy-per-tick: 1000 }
+  MF_MAGIC_AQUARIUM:  { energy-per-tick: 150, pellets-per-fish: 16 }
 ```
 
-### ⏱️ Machine time
+### ⏩ Machine speed (`speed.yml`)
 
-`machines.<ID>.seconds-per-output` sets how long a machine takes per output (Refinery) or per new fish
-(Aquarium). Every tier has its own entry.
+Every machine has a fixed base time and a **speed** multiplier in `plugins/MagicFishing/speed.yml`.
+The default is `1`; set `2` to make a machine twice as fast, `0.5` for half as fast. Decimals are allowed.
 
-| Machine | ID | Default |
-|---|---|---|
-| Magic Fish Refinery I | `MF_FISH_REFINERY_1` | 15 s |
-| Magic Fish Refinery II | `MF_FISH_REFINERY_2` | 8 s |
-| Magic Fish Refinery III | `MF_FISH_REFINERY_3` | 2 s |
-| Magic Aquarium | `MF_MAGIC_AQUARIUM` | 180 s |
+```yaml
+MF_FISH_REFINERY_1: 1
+MF_FISH_REFINERY_2: 1
+MF_FISH_REFINERY_3: 1
+MF_MAGIC_AQUARIUM: 1
+```
 
-- **Unit:** real seconds with the default Slimefun ticker (10 game ticks = 0.5 s). Decimals are allowed
-  (e.g. `2.5`), the minimum is `0.5`; other values are rounded to the nearest 0.5 s.
-- `0`, negative or invalid values are ignored: the default is used and a warning is logged.
-- Compressed refineries (x8 to x64) use the time of their original refinery.
-- Missing entries are added automatically on start; existing values are kept.
-- Changes need a **server restart**.
+| Machine | ID | Base time (speed 1) | Max speed |
+|---|---|---|---|
+| Magic Fish Refinery I | `MF_FISH_REFINERY_1` | 15 s | 30 |
+| Magic Fish Refinery II | `MF_FISH_REFINERY_2` | 8 s | 16 |
+| Magic Fish Refinery III | `MF_FISH_REFINERY_3` | 2 s | 4 |
+| Magic Aquarium | `MF_MAGIC_AQUARIUM` | 180 s per new fish | 360 |
 
+- Time per output = **base time / speed**, rounded to Slimefun ticks (0.5 s with the default ticker).
+  A machine can't go faster than one tick, so a higher speed uses the maximum.
+- `0`, negative or invalid values use `1` and a warning is logged.
+- Compressed refineries use the speed of their original refinery.
+- The machine lore shows the speed and the resulting time, e.g. `Speed: 2x (1 output every 7.5 s)`.
+- Old `seconds-per-output` values in `config.yml` are converted to speeds automatically the first time.
+- Changes need a **server restart**. Missing machines are added automatically.
 
 `/mf reload` applies the `fishing` and `minigame` settings right away. Machine energy and speed, the
 aquarium pellet cost and the chances shown in item lore are applied after a **restart**.
