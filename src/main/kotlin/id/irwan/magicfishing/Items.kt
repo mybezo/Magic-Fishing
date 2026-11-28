@@ -177,7 +177,7 @@ object Items {
             "",
             "&8\u25B8 &7Energy: &e$energy J/tick",
             "&8\u25B8 &7Buffer: &e${energy * 2} J",
-            "&8\u25B8 &7Speed: &f${MachineSpeed.format(timing.speed)}x &8(&71 $unit every ${MachineSpeed.format(timing.seconds)} s&8)"
+            "&8\u25B8 &7Speed: &f1 $unit every ${MachineSpeed.format(timing.seconds)} s"
         )
 
         val refineryEnergy = mapOf(1 to 100, 2 to 250, 3 to 1000)
