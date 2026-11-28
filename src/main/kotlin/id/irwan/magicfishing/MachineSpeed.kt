@@ -4,7 +4,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
-import kotlin.math.abs
 
 /**
  * Machine speed from speed.yml: every machine has a fixed base time and a speed multiplier
@@ -30,28 +29,17 @@ object MachineSpeed {
 
     /**
      * Loads speed.yml (created from the jar if missing), adds missing machines with speed 1 and keeps
-     * existing values. On first creation, custom times from the old config.yml option
-     * machines.<id>.seconds-per-output are converted to speeds; that old option is then removed.
+     * existing values. The old config.yml option machines.<id>.seconds-per-output is removed.
      */
     fun load(plugin: MagicFishing, mainConfig: FileConfiguration) {
         val file = File(plugin.dataFolder, "speed.yml")
-        val firstTime = !file.exists()
-        if (firstTime) plugin.saveResource("speed.yml", false)
+        if (!file.exists()) plugin.saveResource("speed.yml", false)
         val cfg = YamlConfiguration.loadConfiguration(file)
         var changed = false
 
-        for ((id, base) in BASE_SECONDS) {
-            val oldPath = "machines.$id.seconds-per-output"
-            if (mainConfig.isSet(oldPath)) {
-                val old = mainConfig.getDouble(oldPath)
-                if (firstTime && old > 0 && abs(old - base) > 1e-9) {
-                    val speed = Math.round(base / old * 100) / 100.0
-                    cfg.set(id, number(speed))
-                    plugin.logger.info("Moved $oldPath ($old s) to speed.yml: $id: ${format(speed)}")
-                    changed = true
-                }
-                mainConfig.set(oldPath, null)
-            }
+        for (id in BASE_SECONDS.keys) {
+            // The old timer option is replaced by speed.yml.
+            mainConfig.set("machines.$id.seconds-per-output", null)
             if (!cfg.isSet(id)) {
                 cfg.set(id, 1)
                 changed = true
@@ -84,6 +72,4 @@ object MachineSpeed {
     fun format(value: Double): String =
         if (value == Math.rint(value)) value.toLong().toString()
         else String.format(java.util.Locale.ROOT, "%.2f", value).trimEnd('0').trimEnd('.')
-
-    private fun number(value: Double): Any = if (value == Math.rint(value)) value.toLong().toInt() else value
 }

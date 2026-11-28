@@ -317,7 +317,7 @@ MF_MAGIC_AQUARIUM: 1
 - `0`, negative or invalid values use `1` and a warning is logged.
 - Compressed refineries use the speed of their original refinery.
 - The machine lore shows the speed and the resulting time, e.g. `Speed: 2x (1 output every 7.5 s)`.
-- Old `seconds-per-output` values in `config.yml` are converted to speeds automatically the first time.
+- The old `seconds-per-output` option in `config.yml` is no longer used and is removed automatically.
 - Changes need a **server restart**. Missing machines are added automatically.
 
 `/mf reload` applies the `fishing` and `minigame` settings right away. Machine energy and speed, the

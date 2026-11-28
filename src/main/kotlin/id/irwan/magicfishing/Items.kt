@@ -52,9 +52,6 @@ object Items {
         val configVersion = cfg.getInt("config-version", 1)
         if (configVersion < 2) cfg.set("fishing.weights", null)
         if (configVersion < 3) cfg.set("fishing.slimefun-chance", 50.0)
-        if (configVersion < 4) {
-            for ((tier, sec) in REFINERY_SECONDS) cfg.set("machines.MF_FISH_REFINERY_$tier.seconds-per-output", sec)
-        }
         // Normal fishing with rod bait is now the default; the minigame is optional.
         if (configVersion < 5) cfg.set("minigame.enabled", false)
         cfg.set("config-version", CONFIG_VERSION)
@@ -309,8 +306,6 @@ object Items {
         Rarity.values().forEach { it.chance = cDouble("fishing.rarity-chance.${it.name}", it.defaultChance) }
     }
 
-    /** Refinery seconds per output for tier I / II / III. */
-    private val REFINERY_SECONDS = mapOf(1 to 15, 2 to 8, 3 to 2)
 
     /** Enchant glint without showing an enchantment (used for Epic / Legendary fish). */
     private fun addGlint(item: ItemStack) {
