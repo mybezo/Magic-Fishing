@@ -14,6 +14,8 @@ class MagicFishing : JavaPlugin() {
         Minigame.load(config)
         saveConfig()
         server.pluginManager.registerEvents(FishingListener(), this)
+        // Bring Magic Fishing items from older versions up to date (lore, glint, fish material).
+        server.pluginManager.registerEvents(ItemUpdater(), this)
         getCommand("magicfishing")?.let {
             val cmd = MagicFishingCommand(this)
             it.setExecutor(cmd)

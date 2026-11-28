@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Item updater**: Magic Fishing items made by older versions (different lore, old glint, bucket/head fish) are updated to the current version when a player joins or opens an inventory, so old and new items stack and match again in Networks auto crafters and Quantum storage. Rods keep their bait and durability. Networks blueprints that already contain old items must be encoded again once.
+- Machine lore always shows the base time (speed 1), so `speed.yml` never changes the item.
 - **Fix**: magic fish are given straight to the inventory (dropped at the player's feet if it is full) instead of flying from the hook, so they can't get lost on the way (e.g. clear-lag). Epic / Legendary fish use the built-in glint (1.20.5+) instead of a hidden enchantment.
 - **Fix**: the Magic Fishing Rod can't be used together with another fishing rod in the other hand. Casting is blocked (with a message) while both hands hold a fishing rod, so an enchanted vanilla rod can't be combined with the Magic Rod.
 - **Fix**: Networks Grabber (and other cargo that passes no item) no longer crashes on Magic Fishing machines.
