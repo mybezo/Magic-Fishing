@@ -20,12 +20,15 @@ object MachineSpeed {
         "MF_MAGIC_AQUARIUM" to 180.0
     )
 
-    /** Speed multiplier and the resulting real seconds per output. */
-    class Timing(val speed: Double, val seconds: Double)
+    /** Speed multiplier, the resulting real seconds per output and the base seconds (speed 1). */
+    class Timing(val speed: Double, val seconds: Double, val baseSeconds: Double)
 
     private val timings = HashMap<String, Timing>()
 
-    fun get(id: String): Timing = timings[id] ?: Timing(1.0, BASE_SECONDS[id] ?: 1.0)
+    fun get(id: String): Timing {
+        val base = BASE_SECONDS[id] ?: 1.0
+        return timings[id] ?: Timing(1.0, base, base)
+    }
 
     /**
      * Loads speed.yml (created from the jar if missing), adds missing machines with speed 1 and keeps
@@ -64,7 +67,7 @@ object MachineSpeed {
                 speed = maxSpeed
             }
             val ticks = maxOf(1L, Math.round(base / speed / tick))
-            timings[id] = Timing(speed, ticks * tick)
+            timings[id] = Timing(speed, ticks * tick, base)
         }
     }
 

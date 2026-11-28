@@ -316,7 +316,8 @@ MF_MAGIC_AQUARIUM: 1
   A machine can't go faster than one tick, so a higher speed uses the maximum.
 - `0`, negative or invalid values use `1` and a warning is logged.
 - Compressed refineries use the speed of their original refinery.
-- The machine lore shows the resulting time, e.g. `Speed: 1 output every 7.5 s` at speed 2.
+- The machine lore always shows the **base time** (speed 1), so changing a speed never changes the item:
+  machines made before and after a change stay the same item (stacking, Networks, Quantum storage).
 - The old `seconds-per-output` option in `config.yml` is no longer used and is removed automatically.
 - Changes need a **server restart**. Missing machines are added automatically.
 

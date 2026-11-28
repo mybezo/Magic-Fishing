@@ -177,7 +177,9 @@ object Items {
             "",
             "&8\u25B8 &7Energy: &e$energy J/tick",
             "&8\u25B8 &7Buffer: &e${energy * 2} J",
-            "&8\u25B8 &7Speed: &f1 $unit every ${MachineSpeed.format(timing.seconds)} s"
+            // Always the base time (speed 1), so the lore never changes with speed.yml and items made
+            // before / after a speed change stay the same item (stacking, Networks, Quantum storage).
+            "&8\u25B8 &7Speed: &f1 $unit every ${MachineSpeed.format(timing.baseSeconds)} s"
         )
 
         val refineryEnergy = mapOf(1 to 100, 2 to 250, 3 to 1000)
